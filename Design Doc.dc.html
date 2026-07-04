@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+  doc-page:not(:defined){visibility:hidden}
+  body{margin:0}
+  .dd{font-family:'Nunito',system-ui,sans-serif;color:#1c2135;font-size:14px;line-height:1.65}
+  .dd h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:34px;line-height:1.1;margin:0 0 6px;color:#141a33;letter-spacing:-.01em}
+  .dd h2{font-family:'Fredoka',sans-serif;font-weight:600;font-size:21px;margin:34px 0 10px;color:#26305c;padding-bottom:6px;border-bottom:2px solid #e7e9f2}
+  .dd h3{font-family:'Fredoka',sans-serif;font-weight:600;font-size:16px;margin:20px 0 6px;color:#39406b}
+  .dd p{margin:0 0 11px}
+  .dd ul,.dd ol{margin:0 0 12px;padding-left:20px}
+  .dd li{margin:0 0 5px}
+  .dd .lede{font-size:15.5px;color:#4a5170;margin:0 0 4px}
+  .dd .meta{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:12.5px;color:#6b7191;margin:14px 0 4px}
+  .dd .meta b{color:#39406b;font-weight:700}
+  .dd code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#eef0f7;padding:1.5px 5px;border-radius:4px;color:#3a2f6b}
+  .dd .tag{display:inline-block;font-family:'Fredoka',sans-serif;font-size:11px;font-weight:600;color:#fff;background:#5b63b0;border-radius:999px;padding:2px 10px;vertical-align:middle;margin-left:8px}
+  .dd .kicker{font-family:'Fredoka',sans-serif;font-weight:600;letter-spacing:.16em;text-transform:uppercase;font-size:11.5px;color:#7d84ad;margin:0 0 14px}
+  .dd .grid{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+  .dd table{width:100%;border-collapse:collapse;margin:4px 0 16px;font-size:13px}
+  .dd th{text-align:left;font-family:'Fredoka',sans-serif;font-weight:600;color:#39406b;border-bottom:2px solid #d9dcec;padding:7px 8px;font-size:12.5px}
+  .dd td{border-bottom:1px solid #eceef5;padding:7px 8px;vertical-align:top;color:#333a58}
+  .dd td:first-child{white-space:nowrap;font-weight:700;color:#26305c}
+  .dd .card{background:#f7f8fc;border:1px solid #e7e9f2;border-radius:10px;padding:14px 16px;margin:0 0 14px;break-inside:avoid}
+  .dd .card h3{margin-top:0}
+  .dd .note{background:#f2f6ff;border-left:3px solid #7c9cff;border-radius:0 8px 8px 0;padding:11px 14px;margin:0 0 14px;font-size:13px;color:#33406b}
+  .dd .foot{font-size:11px;color:#8b90ad;font-family:'Nunito',sans-serif}
+  .dd .swatches{display:flex;gap:10px;flex-wrap:wrap;margin:2px 0 14px}
+  .dd .sw{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;color:#6b7191;font-family:ui-monospace,monospace}
+  .dd .sw i{width:46px;height:34px;border-radius:8px;border:1px solid rgba(0,0,0,.08);display:block}
+  .dd .phase{display:flex;gap:12px;flex-wrap:wrap;margin:4px 0 14px}
+  .dd .phase .p{flex:1;min-width:150px;background:#f7f8fc;border:1px solid #e7e9f2;border-radius:10px;padding:12px 14px;break-inside:avoid}
+  .dd .phase .p b{display:block;font-family:'Fredoka',sans-serif;color:#26305c;font-size:14px;margin-bottom:3px}
+  .dd .phase .p span{font-size:11px;color:#8b90ad;font-family:ui-monospace,monospace}
+</style>
+</helmet>
+
+<x-import component-from-global-scope="doc-page" from="./doc-page.js" size="letter" margin="0.75in" hint-size="850px,1100px">
+<div class="dd">
+
+  <div slot="header" style="font-family:'Fredoka',sans-serif;font-size:11px;color:#9a9fbd;display:flex;justify-content:space-between;padding-top:6px">
+    <span>Starry Fiddler — Design Document</span><span>Confidential · Draft</span>
+  </div>
+  <div slot="footer" style="font-family:'Nunito',sans-serif;font-size:10.5px;color:#9a9fbd;text-align:center;padding-bottom:4px">
+    Starry Fiddler · a calm space fidget for young astronomers
+  </div>
+
+  <p class="kicker">Product &amp; Engineering Design Document</p>
+  <h1>Starry Fiddler <span class="tag">v0.1 · Draft</span></h1>
+  <p class="lede">A calm, non-competitive space “fiddler” for children ages 3–5. A soothing dark sky where celestial objects drift by, and every key press produces a gentle, delightful reaction — while grown-ups keep the computer safe.</p>
+  <div class="meta">
+    <span><b>Author:</b> Design team</span>
+    <span><b>Date:</b> July 4, 2026</span>
+    <span><b>Status:</b> Prototype complete → planning production build</span>
+    <span><b>Platform:</b> Web (desktop-first)</span>
+  </div>
+
+  <h2>1 · Vision &amp; Goals</h2>
+  <p>Starry Fiddler is the screen a parent switches on when a young child wants to “use the computer.” It turns keyboard mashing into a serene, wonder-filled space scene rather than a frantic game. The experience rewards <b>cause and effect</b> — the core early-learning loop for this age — while gently seeding letter, number, and planet recognition.</p>
+  <h3>Design principles</h3>
+  <ul>
+    <li><b>Calm over rush.</b> Slow drift, soft motion, no timers, no score, no fail state. Nothing chases the child.</li>
+    <li><b>Every press is a “yes.”</b> Any key does something pleasant. Exact matches are a bonus, never a requirement.</li>
+    <li><b>Soothing on the eyes.</b> Deep, low-saturation dark sky; adjustable brightness that caps at a comfortable maximum.</li>
+    <li><b>Grown-ups in control, hidden from kids.</b> Settings live behind a typed passphrase so little fingers can’t reach them.</li>
+    <li><b>Learning by delight.</b> Planets say their names; letters and numbers appear big and friendly. No lessons, no drills.</li>
+  </ul>
+
+  <h3>Non-goals</h3>
+  <ul>
+    <li>Not a typing tutor or a structured curriculum.</li>
+    <li>Not a scored or timed game; no win/lose, no levels to beat.</li>
+    <li>Not a full OS lockdown — the hosting app is responsible for kiosk/fullscreen safety (see §8).</li>
+  </ul>
+
+  <h2>2 · Audience &amp; Context</h2>
+  <div class="grid">
+    <div>
+      <h3>Primary user</h3>
+      <p>Child, 3–5 years. Pre-reader or early reader. Motor control still developing — large targets, forgiving input, no precision required.</p>
+    </div>
+    <div>
+      <h3>Secondary user</h3>
+      <p>Parent/caregiver. Wants a safe, quiet, ad-free activity they can start in seconds and supervise casually. Configures once via the grown-up panel.</p>
+    </div>
+  </div>
+  <div class="note">Research basis: at this age children think in images and symbols and learn primarily through immediate cause-and-effect and repetition. The design deliberately avoids abstract goals and instead maximizes instant, varied, positive feedback.</div>
+
+  <h2>3 · Core Experience</h2>
+  <p>A fullscreen dark sky holds distant twinkling stars and faint galaxies. Celestial objects enter from one side and drift slowly across. Many carry a large <b>letter</b> or <b>number</b> badge. The child can:</p>
+  <ul>
+    <li><b>Press the matching key</b> → that object performs its signature reaction (a “celebration” of its own).</li>
+    <li><b>Press any other key</b> → a big, soft, colored letter floats up with a gentle chime.</li>
+    <li><b>Click / tap an object</b> → same as pressing its key (touch and mouse friendly).</li>
+  </ul>
+  <p>Every ~30 presses, a gentle <b>supernova celebration</b> blooms in the center with the child’s name (if set). That is the only “milestone,” and it is celebratory, not evaluative.</p>
+
+  <h2>4 · Objects &amp; Interactions</h2>
+  <p>Each object type has one clear, signature reaction. Objects are labeled with a unique letter/number so no two on screen share a key.</p>
+  <table>
+    <thead><tr><th>Object</th><th>Label</th><th>Signature reaction</th><th>Sound</th></tr></thead>
+    <tbody>
+      <tr><td>Rocket</td><td>A–Z</td><td>Highlights, speeds up, and tilts to face its travel direction</td><td>Whoosh</td></tr>
+      <tr><td>Asteroid</td><td>0–9</td><td>Bursts into sparks that settle into new twinkling stars</td><td>Soft pop</td></tr>
+      <tr><td>Alien ship</td><td>A–Z</td><td>Enters “lightspeed” and zuuups away into the far sky</td><td>Rising zuup</td></tr>
+      <tr><td>Comet</td><td>A–Z</td><td>Tail flares brighter and longer, trailing sparkles</td><td>Chime arpeggio</td></tr>
+      <tr><td>Satellite</td><td>0–9</td><td>Wiggles, pulses, emits expanding signal rings</td><td>Radio beep</td></tr>
+      <tr><td>Astronaut</td><td>A–Z</td><td>Waves and gives off a few sparkles</td><td>Chime arpeggio</td></tr>
+      <tr><td>Moon</td><td>M</td><td>Advances one phase each press (new → full → new)</td><td>Soft chime</td></tr>
+      <tr><td>Planet (×8)</td><td>Initial</td><td>Pulses; its name appears and is spoken aloud</td><td>Spoken name + arpeggio</td></tr>
+      <tr><td>Constellation</td><td>C/W/X/Y/Z</td><td>Stars connect with glowing lines, then fade</td><td>Chime arpeggio</td></tr>
+      <tr><td>Shooting star</td><td>—</td><td>Ambient streak across the sky (no key; atmosphere only)</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="note">Planets carry accurate-ish sizes and colors (Mercury small &amp; grey → Jupiter large &amp; banded → Saturn/Uranus ringed). A configured <b>favorite planet</b> visits more often and earns extra sparkle rings.</div>
+
+  <h2>5 · Visual &amp; Audio Design</h2>
+  <h3>Style system</h3>
+  <p>Three interchangeable object treatments, assignable per-object at random or forced globally from the grown-up panel:</p>
+  <ul>
+    <li><b>Soft cartoon</b> — flat pastel fills, rounded shapes, no glow.</li>
+    <li><b>Glowy neon</b> — outlined shapes with soft light on near-black.</li>
+    <li><b>Soft + glow</b> — pastel fills with a gentle halo (default recommendation).</li>
+  </ul>
+  <h3>Palette</h3>
+  <div class="swatches">
+    <div class="sw"><i style="background:linear-gradient(180deg,#171d3a,#0a0e1f)"></i>Sky</div>
+    <div class="sw"><i style="background:#dfe6ff"></i>Star cool</div>
+    <div class="sw"><i style="background:#ffe9b8"></i>Star warm</div>
+    <div class="sw"><i style="background:#ff8fa5"></i>Rocket</div>
+    <div class="sw"><i style="background:#63cba1"></i>Alien</div>
+    <div class="sw"><i style="background:#f4b57e"></i>Saturn</div>
+    <div class="sw"><i style="background:#a294b3"></i>Asteroid</div>
+  </div>
+  <h3>Type</h3>
+  <p><code>Fredoka</code> (rounded, friendly) for object badges, big letters, and headings; <code>Nunito</code> for UI copy in the grown-up panel.</p>
+  <h3>Sound</h3>
+  <p>All audio is <b>synthesized at runtime</b> (Web Audio API) — no asset files. Sine-based chimes, filtered-noise whooshes/pops, and a rising “zuup.” Planet names use the browser’s speech synthesis. A single toggle mutes everything. Audio context resumes on first key press to satisfy autoplay policies.</p>
+
+  <h2>6 · Grown-up Panel</h2>
+  <p>Opened by typing the word <code>PARENT</code> on the keyboard (invisible to a mashing child). Dismissed with <code>Esc</code> or the close button. All settings persist to <code>localStorage</code>.</p>
+  <table>
+    <thead><tr><th>Control</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>Sound</td><td>Master on/off for all effects and speech.</td></tr>
+      <tr><td>Sky busyness</td><td>1–10; caps how many objects drift at once (calm ↔ lively).</td></tr>
+      <tr><td>Sky brightness</td><td>1–10; dims the background only. 10 = current comfortable maximum.</td></tr>
+      <tr><td>Visual style</td><td>Random mix / Soft / Neon / Soft+glow.</td></tr>
+      <tr><td>Child’s name</td><td>Personalizes milestone celebrations (shown &amp; spoken).</td></tr>
+      <tr><td>Favorite planet</td><td>Appears more often with extra sparkle.</td></tr>
+      <tr><td>Fullscreen</td><td>Requests fullscreen; <code>Esc</code> exits.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>7 · Technical Architecture</h2>
+  <p>The prototype is a single self-contained component: a fixed-position scene, a <code>requestAnimationFrame</code> loop advancing all objects and particles, and a keyboard/pointer handler. Recommended structure for the production build:</p>
+  <div class="grid">
+    <div class="card"><h3>Scene loop</h3><p>Single rAF driver. Delta-time integration so motion is frame-rate independent. Spawns a new object on an interval, capped by the busyness setting.</p></div>
+    <div class="card"><h3>Object model</h3><p>Plain data records (<code>type, x, y, vx, vy, label, style, mode…</code>) in one array. A <code>sprite(type)</code> renderer maps each to visuals; a <code>hit(type)</code> handler maps each to its reaction.</p></div>
+    <div class="card"><h3>Particles</h3><p>Separate lightweight array for sparks, new stars, and rings. Aged out by lifetime. Kept small for performance.</p></div>
+    <div class="card"><h3>Input</h3><p>Global <code>keydown</code>: passphrase buffer, exact-match lookup, fallback floating letter. Pointer events on objects mirror key hits.</p></div>
+    <div class="card"><h3>Audio</h3><p>One shared <code>AudioContext</code>; small synth helpers per sound. Resumed lazily. Guarded by the sound toggle.</p></div>
+    <div class="card"><h3>Settings</h3><p>Single settings object persisted to <code>localStorage</code>; read on load, written on every change.</p></div>
+  </div>
+  <div class="note"><b>Suggested refactor for code work:</b> extract object definitions into a declarative registry — each type as <code>{ label, spawn, sprite, onHit, sound }</code> — so new floaters (space station, black hole, aurora, planet moons) can be added as data without touching the loop. This is the natural next milestone.</div>
+
+  <h2>8 · Safety &amp; Deployment</h2>
+  <ul>
+    <li><b>Keyboard containment</b> is the hosting app’s job. A plain web page cannot block OS shortcuts (⌘-Space, Alt-Tab, Windows key). Wrap in a kiosk shell (Electron/Tauri, or iPad Guided Access / Android screen pinning) for a true lockdown.</li>
+    <li><b>Fullscreen</b> reduces accidental exits; offer it prominently on launch.</li>
+    <li><b>Privacy:</b> no accounts, no network calls, no analytics required. All state is local. Keep it that way for a children’s product.</li>
+    <li><b>Distribution:</b> ship the component plus its runtime together; the page is offline-capable and can be bundled to a single file.</li>
+  </ul>
+
+  <h2>9 · Roadmap</h2>
+  <div class="phase">
+    <div class="p"><b>Now — Prototype</b><span>DONE</span><p>Scene, 10 object types, sound, speech, milestones, grown-up panel, persistence.</p></div>
+    <div class="p"><b>Next — Productionize</b><span>PLANNED</span><p>Declarative object registry, kiosk shell, fullscreen-on-launch, QA on low-end machines, reduced-motion mode.</p></div>
+    <div class="p"><b>Later — Expand</b><span>IDEAS</span><p>More floaters, day/twilight skies, simple “collect” sticker book, multi-language speech, accessibility audit.</p></div>
+  </div>
+
+  <h3>Open questions</h3>
+  <ul>
+    <li>Target hosting shell — web app, desktop app, or tablet app first?</li>
+    <li>Do we want any lightweight, private progress memory (e.g. planets discovered) or keep it fully stateless per session?</li>
+    <li>Reduced-motion / high-contrast accessibility modes — priority for v1?</li>
+    <li>Localization scope for spoken planet names and celebration copy?</li>
+  </ul>
+
+  <p class="foot" style="margin-top:26px;border-top:1px solid #e7e9f2;padding-top:10px">Starry Fiddler — internal design document. Reflects the v0.1 prototype (<code>Starry Fiddler.dc.html</code>). Update alongside the code.</p>
+
+</div>
+</x-import>
+
+</x-dc>
+</body>
+</html>

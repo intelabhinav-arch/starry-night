@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f0eee9;font-family:system-ui,sans-serif}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}
+.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}
+.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}
+.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}
+@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes floaty2{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(6px) rotate(-8deg)}}
+@keyframes cometdrift{0%,100%{transform:translateX(0)}50%{transform:translateX(14px)}}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Visual style options — Starry Fiddler (kid-safe space scene, ages 3–5)</span></div>
+  <div class="dv-opts">
+
+    <!-- ===================== 1a SOFT FLAT CARTOON ===================== -->
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Soft flat cartoon — pastel fills, rounded shapes, no glow</div>
+      <div class="dv-card" style="width:600px">
+        <div style="position:relative;width:600px;height:400px;background:linear-gradient(180deg,#141a33 0%,#1a2140 60%,#232a4d 100%);overflow:hidden;font-family:'Fredoka',sans-serif">
+          <!-- stars -->
+          <div style="position:absolute;left:40px;top:36px;width:4px;height:4px;border-radius:50%;background:#e8ecff;animation:twinkle 3s infinite"></div>
+          <div style="position:absolute;left:150px;top:90px;width:3px;height:3px;border-radius:50%;background:#e8ecff;animation:twinkle 4s .5s infinite"></div>
+          <div style="position:absolute;left:300px;top:40px;width:5px;height:5px;border-radius:50%;background:#ffe9b8;animation:twinkle 2.6s 1s infinite"></div>
+          <div style="position:absolute;left:470px;top:70px;width:3px;height:3px;border-radius:50%;background:#e8ecff;animation:twinkle 3.4s .2s infinite"></div>
+          <div style="position:absolute;left:540px;top:180px;width:4px;height:4px;border-radius:50%;background:#e8ecff;animation:twinkle 3s 1.4s infinite"></div>
+          <div style="position:absolute;left:90px;top:250px;width:3px;height:3px;border-radius:50%;background:#e8ecff;animation:twinkle 4.2s .8s infinite"></div>
+          <div style="position:absolute;left:250px;top:330px;width:4px;height:4px;border-radius:50%;background:#ffe9b8;animation:twinkle 3.2s 2s infinite"></div>
+          <div style="position:absolute;left:420px;top:300px;width:3px;height:3px;border-radius:50%;background:#e8ecff;animation:twinkle 2.8s 1.2s infinite"></div>
+
+          <!-- planet: Saturn-ish, soft pastel -->
+          <div style="position:absolute;left:452px;top:236px;animation:floaty 6s ease-in-out infinite">
+            <div style="position:relative;width:88px;height:88px">
+              <div style="position:absolute;inset:0;border-radius:50%;background:#f4b57e"></div>
+              <div style="position:absolute;left:14px;top:18px;width:18px;height:10px;border-radius:50%;background:#e79a5f"></div>
+              <div style="position:absolute;left:48px;top:44px;width:24px;height:12px;border-radius:50%;background:#e79a5f"></div>
+              <div style="position:absolute;left:-18px;top:36px;width:124px;height:18px;border-radius:50%;background:#ffd9a8;transform:rotate(-14deg);opacity:.9"></div>
+            </div>
+            <div style="position:absolute;left:26px;top:-24px;width:36px;height:36px;border-radius:12px;background:#ffe9b8;color:#5a3d16;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px">S</div>
+          </div>
+
+          <!-- rocket: rounded body + fins + window -->
+          <div style="position:absolute;left:110px;top:130px;animation:floaty 5s ease-in-out infinite">
+            <div style="position:relative;width:56px;height:110px">
+              <div style="position:absolute;left:8px;top:0;width:40px;height:84px;border-radius:20px 20px 12px 12px;background:#f2f4fb"></div>
+              <div style="position:absolute;left:8px;top:0;width:40px;height:26px;border-radius:20px 20px 0 0;background:#ff8a8a"></div>
+              <div style="position:absolute;left:18px;top:30px;width:20px;height:20px;border-radius:50%;background:#8fd0ff;border:4px solid #c6ccdd;box-sizing:border-box"></div>
+              <div style="position:absolute;left:0;top:58px;width:14px;height:28px;border-radius:8px 0 4px 8px;background:#ff8a8a"></div>
+              <div style="position:absolute;right:0;top:58px;width:14px;height:28px;border-radius:0 8px 8px 4px;background:#ff8a8a"></div>
+              <div style="position:absolute;left:18px;top:84px;width:20px;height:22px;border-radius:0 0 12px 12px;background:#ffcf6e"></div>
+              <div style="position:absolute;left:23px;top:104px;width:10px;height:14px;border-radius:0 0 8px 8px;background:#ff9d4d"></div>
+            </div>
+            <div style="position:absolute;left:60px;top:8px;width:36px;height:36px;border-radius:12px;background:#c9e6ff;color:#173a5c;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px">R</div>
+          </div>
+
+          <!-- asteroid: lumpy circle -->
+          <div style="position:absolute;left:300px;top:150px;animation:floaty2 7s ease-in-out infinite">
+            <div style="position:relative;width:70px;height:62px">
+              <div style="position:absolute;inset:0;border-radius:46% 54% 52% 48%/55% 48% 52% 45%;background:#9b8ea6"></div>
+              <div style="position:absolute;left:14px;top:14px;width:14px;height:12px;border-radius:50%;background:#7f7290"></div>
+              <div style="position:absolute;left:40px;top:32px;width:10px;height:9px;border-radius:50%;background:#7f7290"></div>
+            </div>
+            <div style="position:absolute;left:20px;top:-30px;width:34px;height:34px;border-radius:12px;background:#e3d6f2;color:#463561;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:21px">3</div>
+          </div>
+
+          <!-- alien ship: saucer -->
+          <div style="position:absolute;left:420px;top:74px;animation:cometdrift 6s ease-in-out infinite">
+            <div style="position:relative;width:92px;height:52px">
+              <div style="position:absolute;left:26px;top:0;width:40px;height:30px;border-radius:20px 20px 0 0;background:#a5e8c8"></div>
+              <div style="position:absolute;left:0;top:22px;width:92px;height:26px;border-radius:50%;background:#5fc79b"></div>
+              <div style="position:absolute;left:14px;top:31px;width:8px;height:8px;border-radius:50%;background:#ffe27a"></div>
+              <div style="position:absolute;left:42px;top:33px;width:8px;height:8px;border-radius:50%;background:#ffe27a"></div>
+              <div style="position:absolute;left:70px;top:31px;width:8px;height:8px;border-radius:50%;background:#ffe27a"></div>
+            </div>
+            <div style="position:absolute;left:-38px;top:6px;width:34px;height:34px;border-radius:12px;background:#c9f4de;color:#1d5c40;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:21px">U</div>
+          </div>
+
+          <!-- moon crescent -->
+          <div style="position:absolute;left:52px;top:300px;width:52px;height:52px;border-radius:50%;background:#f5f0dc;box-shadow:inset -12px 6px 0 0 #d9d2b4;animation:floaty 8s ease-in-out infinite"></div>
+
+          <!-- caption chip -->
+          <div style="position:absolute;left:0;right:0;bottom:16px;display:flex;justify-content:center">
+            <div style="background:rgba(255,255,255,.12);border-radius:999px;padding:8px 20px;color:#dfe5ff;font-size:16px;font-weight:600;letter-spacing:.5px">Press R · 3 · U · S !</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== 1b GLOWY NEON ===================== -->
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Glowy neon — outlined shapes with soft light on near-black</div>
+      <div class="dv-card" style="width:600px">
+        <div style="position:relative;width:600px;height:400px;background:radial-gradient(ellipse at 50% 30%,#0c1022 0%,#060812 70%);overflow:hidden;font-family:'Nunito',sans-serif">
+          <!-- stars -->
+          <div style="position:absolute;left:60px;top:50px;width:3px;height:3px;border-radius:50%;background:#9fd8ff;box-shadow:0 0 6px 2px rgba(120,200,255,.6);animation:twinkle 3s infinite"></div>
+          <div style="position:absolute;left:200px;top:100px;width:3px;height:3px;border-radius:50%;background:#ffd0f0;box-shadow:0 0 6px 2px rgba(255,150,230,.5);animation:twinkle 4s .7s infinite"></div>
+          <div style="position:absolute;left:360px;top:44px;width:4px;height:4px;border-radius:50%;background:#fff6c8;box-shadow:0 0 8px 3px rgba(255,240,160,.5);animation:twinkle 2.8s 1.3s infinite"></div>
+          <div style="position:absolute;left:520px;top:120px;width:3px;height:3px;border-radius:50%;background:#9fd8ff;box-shadow:0 0 6px 2px rgba(120,200,255,.6);animation:twinkle 3.6s .4s infinite"></div>
+          <div style="position:absolute;left:120px;top:300px;width:3px;height:3px;border-radius:50%;background:#ffd0f0;box-shadow:0 0 6px 2px rgba(255,150,230,.5);animation:twinkle 3.2s 1.8s infinite"></div>
+          <div style="position:absolute;left:450px;top:330px;width:3px;height:3px;border-radius:50%;background:#9fd8ff;box-shadow:0 0 6px 2px rgba(120,200,255,.6);animation:twinkle 2.6s .9s infinite"></div>
+
+          <!-- planet: outlined ring planet, cyan -->
+          <div style="position:absolute;left:440px;top:230px;animation:floaty 6s ease-in-out infinite">
+            <div style="position:relative;width:90px;height:90px">
+              <div style="position:absolute;inset:0;border-radius:50%;border:3px solid #59e0ff;box-shadow:0 0 18px rgba(89,224,255,.45),inset 0 0 18px rgba(89,224,255,.25)"></div>
+              <div style="position:absolute;left:-20px;top:38px;width:130px;height:16px;border-radius:50%;border:3px solid rgba(89,224,255,.7);transform:rotate(-14deg);box-sizing:border-box"></div>
+            </div>
+            <div style="position:absolute;left:28px;top:-26px;width:36px;height:36px;border-radius:10px;border:2px solid #59e0ff;color:#aef0ff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;text-shadow:0 0 10px rgba(89,224,255,.8);box-shadow:0 0 12px rgba(89,224,255,.35)">S</div>
+          </div>
+
+          <!-- rocket: magenta outline -->
+          <div style="position:absolute;left:120px;top:120px;animation:floaty 5s ease-in-out infinite">
+            <div style="position:relative;width:56px;height:112px">
+              <div style="position:absolute;left:8px;top:0;width:40px;height:84px;border-radius:20px 20px 12px 12px;border:3px solid #ff7ad9;box-sizing:border-box;box-shadow:0 0 16px rgba(255,122,217,.4),inset 0 0 12px rgba(255,122,217,.2)"></div>
+              <div style="position:absolute;left:20px;top:26px;width:16px;height:16px;border-radius:50%;border:3px solid #ff7ad9;box-sizing:border-box"></div>
+              <div style="position:absolute;left:0;top:58px;width:12px;height:26px;border-radius:8px 0 4px 8px;border:3px solid #ff7ad9;box-sizing:border-box"></div>
+              <div style="position:absolute;right:0;top:58px;width:12px;height:26px;border-radius:0 8px 8px 4px;border:3px solid #ff7ad9;box-sizing:border-box"></div>
+              <div style="position:absolute;left:20px;top:88px;width:16px;height:20px;border-radius:0 0 10px 10px;background:#ffb84d;box-shadow:0 0 16px rgba(255,184,77,.8)"></div>
+            </div>
+            <div style="position:absolute;left:60px;top:8px;width:36px;height:36px;border-radius:10px;border:2px solid #ff7ad9;color:#ffc4ec;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;text-shadow:0 0 10px rgba(255,122,217,.8);box-shadow:0 0 12px rgba(255,122,217,.35)">R</div>
+          </div>
+
+          <!-- asteroid: violet outline -->
+          <div style="position:absolute;left:300px;top:160px;animation:floaty2 7s ease-in-out infinite">
+            <div style="position:relative;width:70px;height:62px">
+              <div style="position:absolute;inset:0;border-radius:46% 54% 52% 48%/55% 48% 52% 45%;border:3px solid #b48cff;box-sizing:border-box;box-shadow:0 0 16px rgba(180,140,255,.4),inset 0 0 12px rgba(180,140,255,.2)"></div>
+              <div style="position:absolute;left:16px;top:16px;width:12px;height:10px;border-radius:50%;border:2px solid rgba(180,140,255,.7);box-sizing:border-box"></div>
+              <div style="position:absolute;left:40px;top:32px;width:9px;height:8px;border-radius:50%;border:2px solid rgba(180,140,255,.7);box-sizing:border-box"></div>
+            </div>
+            <div style="position:absolute;left:20px;top:-30px;width:34px;height:34px;border-radius:10px;border:2px solid #b48cff;color:#dcc8ff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:21px;text-shadow:0 0 10px rgba(180,140,255,.8)">3</div>
+          </div>
+
+          <!-- alien ship: green glow -->
+          <div style="position:absolute;left:410px;top:70px;animation:cometdrift 6s ease-in-out infinite">
+            <div style="position:relative;width:92px;height:52px">
+              <div style="position:absolute;left:26px;top:0;width:40px;height:30px;border-radius:20px 20px 0 0;border:3px solid #6dffb8;box-sizing:border-box;box-shadow:0 0 14px rgba(109,255,184,.4)"></div>
+              <div style="position:absolute;left:0;top:22px;width:92px;height:26px;border-radius:50%;border:3px solid #6dffb8;box-sizing:border-box;box-shadow:0 0 18px rgba(109,255,184,.45)"></div>
+              <div style="position:absolute;left:16px;top:31px;width:7px;height:7px;border-radius:50%;background:#fff6a0;box-shadow:0 0 8px rgba(255,246,160,.9)"></div>
+              <div style="position:absolute;left:43px;top:33px;width:7px;height:7px;border-radius:50%;background:#fff6a0;box-shadow:0 0 8px rgba(255,246,160,.9)"></div>
+              <div style="position:absolute;left:70px;top:31px;width:7px;height:7px;border-radius:50%;background:#fff6a0;box-shadow:0 0 8px rgba(255,246,160,.9)"></div>
+            </div>
+            <div style="position:absolute;left:-38px;top:6px;width:34px;height:34px;border-radius:10px;border:2px solid #6dffb8;color:#c2ffdf;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:21px;text-shadow:0 0 10px rgba(109,255,184,.8)">U</div>
+          </div>
+
+          <!-- caption chip -->
+          <div style="position:absolute;left:0;right:0;bottom:16px;display:flex;justify-content:center">
+            <div style="border:1.5px solid rgba(150,200,255,.4);border-radius:999px;padding:8px 20px;color:#bcd8ff;font-size:15px;font-weight:700;letter-spacing:1px;text-shadow:0 0 8px rgba(150,200,255,.5)">PRESS R · 3 · U · S !</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== 1c SOFT + GLOW MIX ===================== -->
+    <div class="dv-opt" id="1c">
+      <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Mix — soft pastel fills with a gentle glow halo (recommended)</div>
+      <div class="dv-card" style="width:600px">
+        <div style="position:relative;width:600px;height:400px;background:radial-gradient(ellipse at 30% 20%,#171d3a 0%,#0d1226 65%,#0a0e1f 100%);overflow:hidden;font-family:'Fredoka',sans-serif">
+          <!-- stars -->
+          <div style="position:absolute;left:50px;top:40px;width:4px;height:4px;border-radius:50%;background:#dfe6ff;box-shadow:0 0 8px 2px rgba(200,215,255,.5);animation:twinkle 3s infinite"></div>
+          <div style="position:absolute;left:180px;top:80px;width:3px;height:3px;border-radius:50%;background:#dfe6ff;box-shadow:0 0 6px 2px rgba(200,215,255,.4);animation:twinkle 4.2s .6s infinite"></div>
+          <div style="position:absolute;left:340px;top:36px;width:5px;height:5px;border-radius:50%;background:#ffedbe;box-shadow:0 0 10px 3px rgba(255,230,170,.5);animation:twinkle 2.8s 1.1s infinite"></div>
+          <div style="position:absolute;left:520px;top:90px;width:3px;height:3px;border-radius:50%;background:#dfe6ff;box-shadow:0 0 6px 2px rgba(200,215,255,.4);animation:twinkle 3.4s .3s infinite"></div>
+          <div style="position:absolute;left:100px;top:290px;width:3px;height:3px;border-radius:50%;background:#dfe6ff;box-shadow:0 0 6px 2px rgba(200,215,255,.4);animation:twinkle 3.8s 1.6s infinite"></div>
+          <div style="position:absolute;left:280px;top:340px;width:4px;height:4px;border-radius:50%;background:#ffedbe;box-shadow:0 0 8px 2px rgba(255,230,170,.5);animation:twinkle 3s 2.1s infinite"></div>
+          <div style="position:absolute;left:460px;top:320px;width:3px;height:3px;border-radius:50%;background:#dfe6ff;box-shadow:0 0 6px 2px rgba(200,215,255,.4);animation:twinkle 2.7s .8s infinite"></div>
+
+          <!-- planet: pastel fill + halo -->
+          <div style="position:absolute;left:445px;top:232px;animation:floaty 6s ease-in-out infinite">
+            <div style="position:relative;width:90px;height:90px;filter:drop-shadow(0 0 14px rgba(244,181,126,.45))">
+              <div style="position:absolute;inset:0;border-radius:50%;background:#f4b57e"></div>
+              <div style="position:absolute;left:14px;top:18px;width:18px;height:10px;border-radius:50%;background:#e79a5f"></div>
+              <div style="position:absolute;left:50px;top:46px;width:24px;height:12px;border-radius:50%;background:#e79a5f"></div>
+              <div style="position:absolute;left:-18px;top:38px;width:126px;height:18px;border-radius:50%;background:#ffd9a8;transform:rotate(-14deg);opacity:.95"></div>
+            </div>
+            <div style="position:absolute;left:27px;top:-26px;width:36px;height:36px;border-radius:12px;background:#ffe9b8;color:#5a3d16;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px;box-shadow:0 0 14px rgba(255,220,150,.55)">S</div>
+          </div>
+
+          <!-- rocket -->
+          <div style="position:absolute;left:115px;top:125px;animation:floaty 5s ease-in-out infinite">
+            <div style="position:relative;width:56px;height:112px;filter:drop-shadow(0 0 12px rgba(180,200,255,.35))">
+              <div style="position:absolute;left:8px;top:0;width:40px;height:84px;border-radius:20px 20px 12px 12px;background:#eef1fb"></div>
+              <div style="position:absolute;left:8px;top:0;width:40px;height:26px;border-radius:20px 20px 0 0;background:#ff8fa5"></div>
+              <div style="position:absolute;left:18px;top:30px;width:20px;height:20px;border-radius:50%;background:#8fd0ff;border:4px solid #c3cade;box-sizing:border-box"></div>
+              <div style="position:absolute;left:0;top:58px;width:14px;height:28px;border-radius:8px 0 4px 8px;background:#ff8fa5"></div>
+              <div style="position:absolute;right:0;top:58px;width:14px;height:28px;border-radius:0 8px 8px 4px;background:#ff8fa5"></div>
+              <div style="position:absolute;left:18px;top:84px;width:20px;height:24px;border-radius:0 0 12px 12px;background:#ffcf6e;box-shadow:0 6px 16px rgba(255,190,90,.7)"></div>
+            </div>
+            <div style="position:absolute;left:60px;top:8px;width:36px;height:36px;border-radius:12px;background:#cfe6ff;color:#173a5c;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px;box-shadow:0 0 14px rgba(170,210,255,.55)">R</div>
+          </div>
+
+          <!-- asteroid -->
+          <div style="position:absolute;left:298px;top:155px;animation:floaty2 7s ease-in-out infinite">
+            <div style="position:relative;width:70px;height:62px;filter:drop-shadow(0 0 10px rgba(170,150,200,.35))">
+              <div style="position:absolute;inset:0;border-radius:46% 54% 52% 48%/55% 48% 52% 45%;background:#a294b3"></div>
+              <div style="position:absolute;left:14px;top:14px;width:14px;height:12px;border-radius:50%;background:#847597"></div>
+              <div style="position:absolute;left:40px;top:32px;width:10px;height:9px;border-radius:50%;background:#847597"></div>
+            </div>
+            <div style="position:absolute;left:20px;top:-30px;width:34px;height:34px;border-radius:12px;background:#e6dbf4;color:#463561;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:21px;box-shadow:0 0 12px rgba(200,175,240,.5)">3</div>
+          </div>
+
+          <!-- alien ship -->
+          <div style="position:absolute;left:415px;top:70px;animation:cometdrift 6s ease-in-out infinite">
+            <div style="position:relative;width:92px;height:52px;filter:drop-shadow(0 0 12px rgba(120,230,180,.4))">
+              <div style="position:absolute;left:26px;top:0;width:40px;height:30px;border-radius:20px 20px 0 0;background:#a9ead0"></div>
+              <div style="position:absolute;left:0;top:22px;width:92px;height:26px;border-radius:50%;background:#63cba1"></div>
+              <div style="position:absolute;left:14px;top:31px;width:8px;height:8px;border-radius:50%;background:#fff0a3;box-shadow:0 0 8px rgba(255,240,160,.9)"></div>
+              <div style="position:absolute;left:42px;top:33px;width:8px;height:8px;border-radius:50%;background:#fff0a3;box-shadow:0 0 8px rgba(255,240,160,.9)"></div>
+              <div style="position:absolute;left:70px;top:31px;width:8px;height:8px;border-radius:50%;background:#fff0a3;box-shadow:0 0 8px rgba(255,240,160,.9)"></div>
+            </div>
+            <div style="position:absolute;left:-38px;top:6px;width:34px;height:34px;border-radius:12px;background:#cef2df;color:#1d5c40;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:21px;box-shadow:0 0 12px rgba(150,240,200,.5)">U</div>
+          </div>
+
+          <!-- comet with tail -->
+          <div style="position:absolute;left:40px;top:280px;animation:cometdrift 7s ease-in-out infinite">
+            <div style="position:relative;width:120px;height:30px">
+              <div style="position:absolute;left:60px;top:0;width:60px;height:22px;border-radius:50%;background:linear-gradient(90deg,rgba(160,215,255,0) 0%,rgba(160,215,255,.5) 100%);transform:rotate(-6deg)"></div>
+              <div style="position:absolute;left:104px;top:-2px;width:26px;height:26px;border-radius:50%;background:#bfe4ff;box-shadow:0 0 16px rgba(170,220,255,.7)"></div>
+            </div>
+          </div>
+
+          <!-- caption chip -->
+          <div style="position:absolute;left:0;right:0;bottom:16px;display:flex;justify-content:center">
+            <div style="background:rgba(255,255,255,.1);border-radius:999px;padding:8px 20px;color:#dfe5ff;font-size:16px;font-weight:600;letter-spacing:.5px;box-shadow:0 0 20px rgba(140,170,255,.15)">Press R · 3 · U · S !</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "build <a class="dv-oid" href="#1c">1c</a> as the full game" · "make <a class="dv-oid" href="#1a">1a</a>'s colors warmer" · "show a darker, calmer version of <a class="dv-oid" href="#1b">1b</a>"</p>
+</section>
+
+</x-dc>
+</body>
+</html>

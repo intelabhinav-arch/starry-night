@@ -1,0 +1,4 @@
+# Design-tool sources — not part of the deployed app
+*.dc.html
+support.js
+.thumbnail

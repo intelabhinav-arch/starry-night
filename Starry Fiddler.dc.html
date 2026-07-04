@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Nunito:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;overflow:hidden;background:#0a0e1f}
+@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes ringGrow{0%{transform:translate(-50%,-50%) scale(.1);opacity:.8}100%{transform:translate(-50%,-50%) scale(3.2);opacity:0}}
+@keyframes wiggle{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+@keyframes softPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes celebText{0%{transform:translate(-50%,-50%) scale(.6);opacity:0}20%{transform:translate(-50%,-50%) scale(1.05);opacity:1}80%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+</style>
+</helmet>
+
+<div style="position:fixed;inset:0;overflow:hidden;background:radial-gradient(ellipse at 30% 15%,#171d3a 0%,#0d1226 55%,#0a0e1f 100%);font-family:'Fredoka',sans-serif;user-select:none;cursor:default">
+
+  <!-- distant stars + galaxies (generated once) -->
+  <div style="position:absolute;inset:0;pointer-events:none">{{ starsLayer }}</div>
+
+  <!-- sky dimmer -->
+  <div style="position:absolute;inset:0;background:#04060e;opacity:{{ skyDim }};pointer-events:none;transition:opacity .6s"></div>
+
+  <!-- floaters -->
+  <div style="position:absolute;inset:0">{{ floatersLayer }}</div>
+
+  <!-- burst particles + new stars -->
+  <div style="position:absolute;inset:0;pointer-events:none">{{ particlesLayer }}</div>
+
+  <!-- big soft letters from any key press -->
+  <div style="position:absolute;inset:0;pointer-events:none">{{ lettersLayer }}</div>
+
+  <!-- milestone celebration -->
+  <sc-if value="{{ celebrating }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;pointer-events:none">
+      <div style="position:absolute;left:50%;top:50%;width:30vmin;height:30vmin;border-radius:50%;border:3px solid rgba(255,224,150,.7);animation:ringGrow 2.8s ease-out forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:30vmin;height:30vmin;border-radius:50%;border:3px solid rgba(150,210,255,.6);animation:ringGrow 2.8s .5s ease-out forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;width:30vmin;height:30vmin;border-radius:50%;border:3px solid rgba(255,160,210,.5);animation:ringGrow 2.8s 1s ease-out forwards"></div>
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#ffeec2;font-size:7vmin;font-weight:700;letter-spacing:.06em;text-shadow:0 0 30px rgba(255,220,150,.6);animation:celebText 3.8s ease forwards;white-space:nowrap">{{ celebText }}</div>
+    </div>
+  </sc-if>
+
+  <!-- planet name banner -->
+  <sc-if value="{{ planetName }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;left:50%;bottom:12vh;transform:translateX(-50%);pointer-events:none;background:rgba(255,255,255,.1);border-radius:999px;padding:1.4vmin 4vmin;color:#ffe9b8;font-size:5vmin;font-weight:700;letter-spacing:.08em;box-shadow:0 0 30px rgba(255,220,150,.25)">{{ planetName }}</div>
+  </sc-if>
+
+  <!-- gentle hint chip -->
+  <div style="position:absolute;left:0;right:0;bottom:2.5vh;display:flex;justify-content:center;pointer-events:none">
+    <div style="background:rgba(255,255,255,.07);border-radius:999px;padding:1vmin 2.8vmin;color:rgba(220,228,255,.55);font-size:1.9vmin;font-weight:500;letter-spacing:.08em">PRESS THE LETTERS YOU SEE ✦ &nbsp;grown-ups: type PARENT</div>
+  </div>
+
+  <!-- parent panel -->
+  <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:rgba(8,10,22,.55);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+      <div style="width:380px;max-width:88vw;background:#161c36;border:1px solid rgba(160,180,255,.18);border-radius:20px;padding:26px 28px;color:#dfe5ff;font-family:'Nunito',sans-serif;display:flex;flex-direction:column;gap:18px;box-shadow:0 20px 60px rgba(0,0,0,.5)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:17px;font-weight:800;letter-spacing:.04em">Grown-up panel</div>
+          <button onClick="{{ closePanel }}" style="background:rgba(255,255,255,.08);border:none;color:#dfe5ff;border-radius:10px;padding:8px 14px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer">Close ✕</button>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div style="font-size:13.5px;font-weight:700">Sound</div>
+          <button onClick="{{ toggleSound }}" style="background:rgba(255,255,255,.08);border:none;color:#dfe5ff;border-radius:10px;padding:8px 16px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;min-width:70px">{{ soundLabel }}</button>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;font-size:13.5px;font-weight:700"><span>How busy the sky is</span><span style="opacity:.6">{{ density }}</span></div>
+          <input type="range" min="1" max="10" step="1" value="{{ density }}" onChange="{{ onDensity }}" style="width:100%;accent-color:#8fb0ff">
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;font-size:13.5px;font-weight:700"><span>Sky brightness</span><span style="opacity:.6">{{ brightness }}</span></div>
+          <input type="range" min="1" max="10" step="1" value="{{ brightness }}" onChange="{{ onBrightness }}" style="width:100%;accent-color:#8fb0ff">
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div style="font-size:13.5px;font-weight:700">Visual style</div>
+          <select value="{{ styleMode }}" onChange="{{ onStyleMode }}" style="background:#0f1430;border:1px solid rgba(160,180,255,.25);color:#dfe5ff;border-radius:10px;padding:8px 12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer">
+            <option value="random">Random mix</option>
+            <option value="soft">Soft cartoon</option>
+            <option value="neon">Glowy neon</option>
+            <option value="mix">Soft + glow</option>
+          </select>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div style="font-size:13.5px;font-weight:700">Child's name</div>
+          <input type="text" value="{{ kidName }}" onChange="{{ onKidName }}" placeholder="for surprises" style="background:#0f1430;border:1px solid rgba(160,180,255,.25);color:#dfe5ff;border-radius:10px;padding:8px 12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;width:140px">
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div style="font-size:13.5px;font-weight:700">Favorite planet</div>
+          <select value="{{ favPlanet }}" onChange="{{ onFavPlanet }}" style="background:#0f1430;border:1px solid rgba(160,180,255,.25);color:#dfe5ff;border-radius:10px;padding:8px 12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer">
+            <option value="">None</option>
+            <option value="Mercury">Mercury</option>
+            <option value="Venus">Venus</option>
+            <option value="Earth">Earth</option>
+            <option value="Mars">Mars</option>
+            <option value="Jupiter">Jupiter</option>
+            <option value="Saturn">Saturn</option>
+            <option value="Uranus">Uranus</option>
+            <option value="Neptune">Neptune</option>
+          </select>
+        </div>
+
+        <button onClick="{{ goFullscreen }}" style="background:#262f5c;border:none;color:#dfe5ff;border-radius:12px;padding:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer">⛶ Go fullscreen (Esc exits)</button>
+        <div style="font-size:11.5px;opacity:.5;line-height:1.5">Favorite planet visits more often and gets extra sparkles. Every 30 key presses brings a gentle supernova celebration with your child's name.</div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    panelOpen: false, celebrating: false, celebText: '', planetName: '',
+    soundOn: true, density: 4, styleMode: 'random', kidName: '', favPlanet: '', brightness: 10
+  };
+
+  // ---------- lifecycle ----------
+  componentDidMount() {
+    try {
+      const s = JSON.parse(localStorage.getItem('starryFiddler.settings') || '{}');
+      this.setState(Object.assign({}, {
+        soundOn: s.soundOn !== false,
+        density: s.density || 4,
+        styleMode: s.styleMode || 'random',
+        kidName: s.kidName || '',
+        favPlanet: s.favPlanet || '',
+        brightness: s.brightness || 10
+      }));
+    } catch (e) {}
+    this.floaters = []; this.particles = []; this.letters = [];
+    this.pressCount = 0; this.buf = ''; this.lastSpawn = 0; this.uid = 1;
+    this.starEls = this.makeStars();
+    this.keyH = (e) => this.onKey(e);
+    window.addEventListener('keydown', this.keyH);
+    this.lastT = performance.now();
+    this.rafId = requestAnimationFrame((t) => this.loop(t));
+  }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.keyH);
+    cancelAnimationFrame(this.rafId);
+  }
+
+  save(patch) {
+    this.setState(patch, () => {
+      const { soundOn, density, styleMode, kidName, favPlanet, brightness } = this.state;
+      localStorage.setItem('starryFiddler.settings', JSON.stringify({ soundOn, density, styleMode, kidName, favPlanet, brightness }));
+    });
+  }
+
+  // ---------- audio ----------
+  ac() {
+    if (!this._ac) { try { this._ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (this._ac && this._ac.state === 'suspended') this._ac.resume();
+    return this._ac;
+  }
+  tone(freq, dur, type, vol, when) {
+    if (!this.state.soundOn) return; const ac = this.ac(); if (!ac) return;
+    const t0 = ac.currentTime + (when || 0);
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type || 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(vol || 0.08, t0 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + (dur || 0.6));
+    o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0 + (dur || 0.6) + 0.05);
+  }
+  chime() { const p = [261.6, 329.6, 392, 440, 523.3]; this.tone(p[Math.floor(Math.random() * p.length)], 0.8, 'sine', 0.06); }
+  arpeggio() { [261.6, 329.6, 392, 523.3].forEach((f, i) => this.tone(f, 0.7, 'sine', 0.06, i * 0.09)); }
+  chord() { [261.6, 329.6, 392].forEach((f) => this.tone(f, 2.2, 'sine', 0.05)); [523.3, 659.3].forEach((f, i) => this.tone(f, 1.6, 'sine', 0.035, 0.4 + i * 0.2)); }
+  zuup() {
+    if (!this.state.soundOn) return; const ac = this.ac(); if (!ac) return;
+    const t0 = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(280, t0); o.frequency.exponentialRampToValueAtTime(1400, t0 + 0.5);
+    g.gain.setValueAtTime(0.07, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.6);
+    o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0 + 0.7);
+  }
+  whoosh() {
+    if (!this.state.soundOn) return; const ac = this.ac(); if (!ac) return;
+    const dur = 0.7, buf = ac.createBuffer(1, ac.sampleRate * dur, ac.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+    const src = ac.createBufferSource(); src.buffer = buf;
+    const f = ac.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.2;
+    f.frequency.setValueAtTime(300, ac.currentTime); f.frequency.exponentialRampToValueAtTime(1800, ac.currentTime + dur);
+    const g = ac.createGain(); g.gain.value = 0.09;
+    src.connect(f); f.connect(g); g.connect(ac.destination); src.start();
+  }
+  pop() {
+    if (!this.state.soundOn) return; const ac = this.ac(); if (!ac) return;
+    const dur = 0.25, buf = ac.createBuffer(1, ac.sampleRate * dur, ac.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2);
+    const src = ac.createBufferSource(); src.buffer = buf;
+    const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 900;
+    const g = ac.createGain(); g.gain.value = 0.16;
+    src.connect(f); f.connect(g); g.connect(ac.destination); src.start();
+    this.tone(392, 0.5, 'sine', 0.05, 0.05);
+  }
+  beep() { this.tone(880, 0.15, 'square', 0.025); this.tone(1174, 0.15, 'square', 0.025, 0.2); }
+  speak(text) {
+    if (!this.state.soundOn || !window.speechSynthesis) return;
+    try { const u = new SpeechSynthesisUtterance(text); u.rate = 0.85; u.pitch = 1.15; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+
+  // ---------- stars ----------
+  makeStars() {
+    const els = [], E = React.createElement;
+    for (let g = 0; g < 3; g++) {
+      els.push(E('div', { key: 'g' + g, style: { position: 'absolute', left: (10 + Math.random() * 80) + 'vw', top: (5 + Math.random() * 70) + 'vh', width: '18vmin', height: '7vmin', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(150,170,255,.10) 0%, rgba(150,170,255,0) 70%)', transform: 'rotate(' + (Math.random() * 90 - 45) + 'deg)', filter: 'blur(6px)' } }));
+    }
+    for (let i = 0; i < 80; i++) {
+      const sz = 1.5 + Math.random() * 3, warm = Math.random() < 0.25;
+      els.push(E('div', { key: 's' + i, style: {
+        position: 'absolute', left: Math.random() * 100 + 'vw', top: Math.random() * 100 + 'vh',
+        width: sz + 'px', height: sz + 'px', borderRadius: '50%',
+        background: warm ? '#ffe9b8' : '#dfe6ff',
+        boxShadow: sz > 3 ? '0 0 6px 1px rgba(200,215,255,.5)' : 'none',
+        animation: 'twinkle ' + (2.5 + Math.random() * 3.5) + 's ' + (Math.random() * 4) + 's ease-in-out infinite'
+      } }));
+    }
+    return els;
+  }
+
+  // ---------- spawning ----------
+  pickStyle() { const m = this.state.styleMode; if (m !== 'random') return m; return ['soft', 'neon', 'mix'][Math.floor(Math.random() * 3)]; }
+  usedLabels() { return this.floaters.map((f) => f.label).filter(Boolean); }
+  pickLabel(pool) {
+    const used = this.usedLabels();
+    const free = pool.split('').filter((c) => used.indexOf(c) < 0);
+    if (!free.length) return null;
+    return free[Math.floor(Math.random() * free.length)];
+  }
+  spawn() {
+    const types = [
+      ['planet', 16], ['rocket', 12], ['asteroid', 12], ['alien', 10], ['comet', 8],
+      ['satellite', 8], ['shooting', 8], ['astronaut', 6], ['moon', 6], ['constellation', 4]
+    ];
+    let total = 0; types.forEach((t) => total += t[1]);
+    let r = Math.random() * total, type = 'planet';
+    for (const t of types) { r -= t[1]; if (r <= 0) { type = t[0]; break; } }
+    if (this.floaters.some((f) => f.type === type && type !== 'planet' && type !== 'shooting')) return;
+
+    const dir = Math.random() < 0.5 ? 1 : -1;
+    const f = {
+      id: this.uid++, type, dir, style: this.pickStyle(),
+      x: dir === 1 ? -18 : 112, y: 8 + Math.random() * 62,
+      vx: dir * (1.6 + Math.random() * 1.6), vy: (Math.random() - 0.5) * 0.3,
+      scale: 0.8 + Math.random() * 0.45, mode: 'drift', born: performance.now(),
+      label: null, flash: 0, phase: Math.floor(Math.random() * 8), tail: 0
+    };
+    if (type === 'planet') {
+      const names = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
+      let name = names[Math.floor(Math.random() * names.length)];
+      if (this.state.favPlanet && Math.random() < 0.4) name = this.state.favPlanet;
+      if (this.floaters.some((o) => o.planet === name)) return;
+      f.planet = name; f.label = name[0].toUpperCase();
+      if (this.usedLabels().indexOf(f.label) >= 0) return;
+      f.vx = dir * (1.0 + Math.random() * 0.8);
+    } else if (type === 'asteroid' || type === 'satellite') {
+      f.label = this.pickLabel('0123456789');
+    } else if (type === 'shooting') {
+      f.label = null; f.vx = dir * 14; f.vy = 3.5; f.y = Math.random() * 30;
+    } else if (type === 'moon') {
+      f.label = this.pickLabel('M') || null; if (!f.label) return;
+      f.vx = dir * 0.8;
+    } else if (type === 'constellation') {
+      f.label = this.pickLabel('CWXYZ'); f.vx = dir * 0.6;
+    } else {
+      f.label = this.pickLabel('ABDEFGHIJKLNOPQRTV');
+      if (type === 'rocket') { f.vx = dir * (3.4 + Math.random() * 2.2); f.vy = (Math.random() - 0.5) * 0.8; }
+    }
+    if (f.label === null && type !== 'shooting') return;
+    this.floaters.push(f);
+  }
+
+  // ---------- input ----------
+  onKey(e) {
+    if (this.state.panelOpen) {
+      if (e.key === 'Escape') this.setState({ panelOpen: false });
+      return;
+    }
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = (e.key || '').toUpperCase();
+    if (k.length !== 1 || !/[A-Z0-9]/.test(k)) return;
+    e.preventDefault();
+    this.buf = (this.buf + k).slice(-6);
+    if (this.buf === 'PARENT') { this.buf = ''; this.setState({ panelOpen: true }); return; }
+
+    this.pressCount++;
+    const hit = this.floaters.find((f) => f.label === k && f.mode === 'drift');
+    if (hit) this.hitFloater(hit);
+    else {
+      this.letters.push({ id: this.uid++, ch: k, x: 25 + Math.random() * 50, y: 45 + Math.random() * 20, born: performance.now(), hue: Math.floor(Math.random() * 360) });
+      this.chime();
+    }
+    if (this.pressCount % 30 === 0) this.celebrate();
+  }
+
+  hitFloater(f) {
+    f.flash = performance.now();
+    switch (f.type) {
+      case 'rocket': f.vx *= 3.2; f.boost = true; this.whoosh(); break;
+      case 'asteroid': this.burst(f); this.pop(); break;
+      case 'alien': f.mode = 'zoom'; f.zoomT = performance.now(); this.zuup(); break;
+      case 'comet': f.tail = 1; this.sparkle(f, 6); this.arpeggio(); break;
+      case 'satellite': f.pulse = performance.now(); this.rings(f); this.beep(); break;
+      case 'astronaut': f.wave = performance.now(); this.sparkle(f, 4); this.arpeggio(); break;
+      case 'moon': f.phase = (f.phase + 1) % 8; this.chime(); this.tone(523.3, 0.6, 'sine', 0.05, 0.1); break;
+      case 'constellation': f.connected = performance.now(); this.arpeggio(); break;
+      case 'planet': {
+        f.named = performance.now();
+        const fav = f.planet === this.state.favPlanet;
+        this.setState({ planetName: (fav ? '⭐ ' : '') + f.planet });
+        clearTimeout(this._pnT); this._pnT = setTimeout(() => this.setState({ planetName: '' }), 2600);
+        this.speak(f.planet); this.arpeggio();
+        if (fav) this.rings(f);
+        break;
+      }
+    }
+  }
+
+  burst(f) {
+    const now = performance.now();
+    for (let i = 0; i < 12; i++) {
+      const a = Math.random() * Math.PI * 2, sp = 4 + Math.random() * 10;
+      this.particles.push({ id: this.uid++, x: f.x + 2, y: f.y + 2, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, born: now, life: 1.1, kind: 'spark', color: ['#ffe9b8', '#dfe6ff', '#e3d6f2'][i % 3] });
+    }
+    for (let i = 0; i < 6; i++) {
+      this.particles.push({ id: this.uid++, x: f.x + 2 + (Math.random() - 0.5) * 10, y: f.y + 2 + (Math.random() - 0.5) * 8, vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6, born: now, life: 5, kind: 'newstar', color: '#dfe6ff' });
+    }
+    this.floaters = this.floaters.filter((o) => o.id !== f.id);
+  }
+  sparkle(f, n) {
+    const now = performance.now();
+    for (let i = 0; i < n; i++) {
+      this.particles.push({ id: this.uid++, x: f.x + 2, y: f.y + 2, vx: (Math.random() - 0.5) * 5, vy: (Math.random() - 0.5) * 5, born: now, life: 1, kind: 'spark', color: '#ffe9b8' });
+    }
+  }
+  rings(f) {
+    const now = performance.now();
+    for (let i = 0; i < 3; i++) this.particles.push({ id: this.uid++, x: f.x + 2, y: f.y + 2, born: now + i * 300, life: 1.4, kind: 'ring', color: 'rgba(150,210,255,.6)' });
+  }
+  celebrate() {
+    const name = (this.state.kidName || '').trim();
+    const msgs = name ? ['WONDERFUL, ' + name.toUpperCase() + '!', 'GREAT JOB, ' + name.toUpperCase() + '!', name.toUpperCase() + ', YOU ARE A STAR!'] : ['WONDERFUL!', 'GREAT JOB!', 'YOU ARE A STAR!'];
+    const msg = msgs[Math.floor(Math.random() * msgs.length)];
+    this.setState({ celebrating: true, celebText: msg });
+    this.chord();
+    if (name) this.speak(msg.toLowerCase().replace(/!/g, ''));
+    const now = performance.now();
+    for (let i = 0; i < 16; i++) {
+      const a = (i / 16) * Math.PI * 2;
+      this.particles.push({ id: this.uid++, x: 50, y: 48, vx: Math.cos(a) * (3 + Math.random() * 4), vy: Math.sin(a) * (3 + Math.random() * 4), born: now + Math.random() * 400, life: 2.4, kind: 'spark', color: ['#ffe9b8', '#dfe6ff', '#ffd0f0', '#c9f4de'][i % 4] });
+    }
+    clearTimeout(this._cT); this._cT = setTimeout(() => this.setState({ celebrating: false }), 4000);
+  }
+
+  // ---------- loop ----------
+  loop(t) {
+    this.rafId = requestAnimationFrame((tt) => this.loop(tt));
+    const dt = Math.min(0.05, (t - this.lastT) / 1000); this.lastT = t;
+
+    const maxActive = Math.round(2 + this.state.density * 0.7);
+    if (t - this.lastSpawn > 1400 && this.floaters.length < maxActive) {
+      this.lastSpawn = t; this.spawn();
+    }
+
+    for (const f of this.floaters) {
+      if (f.mode === 'zoom') {
+        const p = Math.min(1, (t - f.zoomT) / 1300);
+        f.zoomP = p; f.x += f.dir * 55 * dt * (0.5 + p); f.y -= 22 * dt * p;
+        if (p >= 1) f.dead = true;
+      } else {
+        f.x += f.vx * dt; f.y += f.vy * dt;
+        if (f.tail > 0) f.tail = Math.max(0, f.tail - dt * 0.4);
+        if (f.x < -25 || f.x > 120 || f.y > 110 || f.y < -20) f.dead = true;
+        if (f.connected && t - f.connected > 4000) f.dead = true;
+      }
+    }
+    this.floaters = this.floaters.filter((f) => !f.dead);
+
+    for (const p of this.particles) {
+      const age = (t - p.born) / 1000;
+      if (age < 0) continue;
+      if (p.kind === 'spark') { p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= 0.985; p.vy *= 0.985; }
+      else if (p.kind === 'newstar') { p.x += p.vx * dt; p.y += p.vy * dt; }
+      p.dead = age > p.life;
+    }
+    this.particles = this.particles.filter((p) => !p.dead);
+    this.letters = this.letters.filter((l) => (t - l.born) / 1000 < 2.4);
+
+    this.forceUpdate();
+  }
+
+  // ---------- sprite helpers ----------
+  sh(base, glow, s, extra) {
+    let o;
+    if (s === 'neon') o = { background: 'transparent', border: '3px solid ' + base, boxSizing: 'border-box', boxShadow: '0 0 12px ' + glow + ', inset 0 0 8px ' + glow };
+    else if (s === 'mix') o = { background: base, boxShadow: '0 0 12px ' + glow };
+    else o = { background: base };
+    return Object.assign(o, extra);
+  }
+  chipStyle(color, glow, s) {
+    const base = { position: 'absolute', width: 34, height: 34, borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 21, fontFamily: "'Fredoka',sans-serif" };
+    if (s === 'neon') return Object.assign(base, { border: '2px solid ' + color, color: color, textShadow: '0 0 10px ' + glow, boxShadow: '0 0 10px ' + glow });
+    if (s === 'mix') return Object.assign(base, { background: color, color: '#1c2240', boxShadow: '0 0 12px ' + glow });
+    return Object.assign(base, { background: color, color: '#1c2240' });
+  }
+
+  sprite(f) {
+    const E = React.createElement, s = f.style, D = (st, ...k) => E('div', { style: st }, ...k);
+    const A = (l, tp, w, h, st) => Object.assign({ position: 'absolute', left: l, top: tp, width: w, height: h }, st);
+    switch (f.type) {
+      case 'rocket': {
+        const c = s === 'neon' ? '#ff7ad9' : '#ff8fa5', g = 'rgba(255,130,200,.4)';
+        const body = s === 'neon' ? '#ff7ad9' : '#f0f2fb';
+        const flameH = f.boost ? 34 : 18;
+        const ang = Math.atan2(f.vy || 0, f.vx || f.dir) * 180 / Math.PI + 90;
+        return D({ position: 'relative', width: 56, height: 116, transform: 'rotate(' + ang + 'deg)' },
+          D(this.sh(body, g, s, A(8, 0, 40, 84, { borderRadius: '20px 20px 12px 12px' }))),
+          s !== 'neon' ? D(A(8, 0, 40, 26, { borderRadius: '20px 20px 0 0', background: c })) : null,
+          D(A(18, 30, 20, 20, { borderRadius: '50%', background: s === 'neon' ? 'transparent' : '#8fd0ff', border: s === 'neon' ? '3px solid ' + c : '4px solid #c3cade', boxSizing: 'border-box' })),
+          D(this.sh(c, g, s, A(0, 58, 13, 27, { borderRadius: '8px 0 4px 8px' }))),
+          D(this.sh(c, g, s, A(43, 58, 13, 27, { borderRadius: '0 8px 8px 4px' }))),
+          D(A(19, 84, 18, flameH, { borderRadius: '0 0 12px 12px', background: 'linear-gradient(180deg,#ffcf6e,#ff9d4d)', boxShadow: '0 4px 16px rgba(255,180,80,' + (f.boost ? 0.9 : 0.5) + ')', transition: 'height .3s' })));
+      }
+      case 'asteroid': {
+        const c = s === 'neon' ? '#b48cff' : '#a294b3', g = 'rgba(180,140,255,.4)';
+        return D({ position: 'relative', width: 68, height: 60 },
+          D(this.sh(c, g, s, A(0, 0, 68, 60, { borderRadius: '46% 54% 52% 48%/55% 48% 52% 45%' }))),
+          D(A(14, 14, 14, 12, { borderRadius: '50%', background: s === 'neon' ? 'transparent' : '#847597', border: s === 'neon' ? '2px solid rgba(180,140,255,.7)' : 'none', boxSizing: 'border-box' })),
+          D(A(40, 32, 10, 9, { borderRadius: '50%', background: s === 'neon' ? 'transparent' : '#847597', border: s === 'neon' ? '2px solid rgba(180,140,255,.7)' : 'none', boxSizing: 'border-box' })));
+      }
+      case 'alien': {
+        const c = s === 'neon' ? '#6dffb8' : '#63cba1', g = 'rgba(110,240,180,.45)';
+        const dome = s === 'neon' ? '#6dffb8' : '#a9ead0';
+        const p = f.zoomP || 0;
+        return D({ position: 'relative', width: 92, height: 52, transform: 'scale(' + (1 - p * 0.9) + ',' + (1 - p * 0.95) + ') scaleX(' + (1 + p * 3) + ')', opacity: 1 - p * 0.6 },
+          p > 0.05 ? D(A(f.dir === 1 ? -80 : 92, 26, 80, 4, { borderRadius: 4, background: 'linear-gradient(' + (f.dir === 1 ? 90 : 270) + 'deg, rgba(110,240,180,0), rgba(110,240,180,.7))' })) : null,
+          D(this.sh(dome, g, s, A(26, 0, 40, 30, { borderRadius: '20px 20px 0 0' }))),
+          D(this.sh(c, g, s, A(0, 22, 92, 26, { borderRadius: '50%' }))),
+          [14, 42, 70].map((x, i) => E('div', { key: i, style: A(x, 31, 8, 8, { borderRadius: '50%', background: '#fff0a3', boxShadow: '0 0 8px rgba(255,240,160,.9)', animation: f.flash ? 'twinkle .4s infinite' : 'none' }) })));
+      }
+      case 'comet': {
+        const tailW = 70 + f.tail * 90;
+        return D({ position: 'relative', width: 160, height: 30, transform: f.dir === 1 ? 'scaleX(-1)' : 'none' },
+          D(A(26, 4, tailW, 20, { borderRadius: '50%', background: 'linear-gradient(90deg, rgba(160,215,255,' + (0.45 + f.tail * 0.4) + '), rgba(160,215,255,0))', transition: 'width .5s' })),
+          D(A(0, 0, 28, 28, { borderRadius: '50%', background: s === 'neon' ? 'transparent' : '#bfe4ff', border: s === 'neon' ? '3px solid #9fd8ff' : 'none', boxSizing: 'border-box', boxShadow: '0 0 ' + (14 + f.tail * 20) + 'px rgba(170,220,255,.8)' })));
+      }
+      case 'satellite': {
+        const c = s === 'neon' ? '#9fd8ff' : '#c3cade', g = 'rgba(150,210,255,.4)';
+        const wig = f.pulse && performance.now() - f.pulse < 1200;
+        return D({ position: 'relative', width: 110, height: 46, animation: wig ? 'wiggle .6s ease-in-out 2' : 'none' },
+          D(this.sh('#7ea6d9', g, s, A(0, 12, 30, 20, { borderRadius: 4 }))),
+          D(this.sh('#7ea6d9', g, s, A(80, 12, 30, 20, { borderRadius: 4 }))),
+          D(this.sh(c, g, s, A(38, 8, 34, 28, { borderRadius: 9 }))),
+          D(A(52, -6, 4, 14, { background: c, borderRadius: 2 })),
+          D(A(50, -12, 8, 8, { borderRadius: '50%', background: '#ffe27a', boxShadow: '0 0 8px rgba(255,226,122,.9)' })));
+      }
+      case 'astronaut': {
+        const wav = f.wave && performance.now() - f.wave < 1600;
+        return D({ position: 'relative', width: 60, height: 84, animation: wav ? 'wiggle .8s ease-in-out 2' : 'none' },
+          D(A(10, 0, 40, 40, { borderRadius: '50%', background: s === 'neon' ? 'transparent' : '#f0f2fb', border: s === 'neon' ? '3px solid #dfe6ff' : 'none', boxSizing: 'border-box', boxShadow: s !== 'soft' ? '0 0 12px rgba(200,215,255,.4)' : 'none' })),
+          D(A(18, 10, 24, 16, { borderRadius: 10, background: '#6a8fd0' })),
+          D(A(14, 40, 32, 34, { borderRadius: 12, background: s === 'neon' ? 'transparent' : '#e4e8f6', border: s === 'neon' ? '3px solid #dfe6ff' : 'none', boxSizing: 'border-box' })),
+          D(A(2, 44, 12, 24, { borderRadius: 8, background: s === 'neon' ? 'transparent' : '#e4e8f6', border: s === 'neon' ? '2px solid #dfe6ff' : 'none', boxSizing: 'border-box', transform: 'rotate(20deg)' })),
+          D(A(46, 44, 12, 24, { borderRadius: 8, background: s === 'neon' ? 'transparent' : '#e4e8f6', border: s === 'neon' ? '2px solid #dfe6ff' : 'none', boxSizing: 'border-box', transform: 'rotate(-20deg)' })));
+      }
+      case 'moon': {
+        const ph = f.phase, off = [(-22), -14, -7, 0, 7, 14, 22, 0][ph];
+        const full = ph === 3, newm = ph === 7;
+        return D({ position: 'relative', width: 56, height: 56 },
+          D(A(0, 0, 56, 56, { borderRadius: '50%', background: '#f5f0dc', boxShadow: newm ? 'inset 0 0 0 28px #565a6e' : (full ? '0 0 16px rgba(245,240,200,.5)' : 'inset ' + off + 'px 4px 0 0 #565a6e'), transition: 'box-shadow .5s' })),
+          !newm ? D(A(16, 18, 10, 8, { borderRadius: '50%', background: 'rgba(90,80,60,.15)' })) : null,
+          !newm ? D(A(32, 34, 8, 6, { borderRadius: '50%', background: 'rgba(90,80,60,.15)' })) : null);
+      }
+      case 'shooting': {
+        return D({ position: 'relative', width: 100, height: 12, transform: f.dir === 1 ? 'rotate(14deg)' : 'rotate(166deg)' },
+          D(A(10, 3, 88, 5, { borderRadius: 4, background: 'linear-gradient(270deg, rgba(255,255,255,0), rgba(230,240,255,.8))', transform: 'scaleX(-1)' })),
+          D(A(0, 0, 12, 12, { borderRadius: '50%', background: '#fff', boxShadow: '0 0 12px 3px rgba(230,240,255,.9)' })));
+      }
+      case 'constellation': {
+        const pts = [[0, 34], [26, 20], [52, 26], [74, 10], [98, 0]];
+        const on = !!f.connected;
+        const kids = [];
+        for (let i = 0; i < pts.length - 1; i++) {
+          const dx = pts[i + 1][0] - pts[i][0], dy = pts[i + 1][1] - pts[i][1];
+          const len = Math.sqrt(dx * dx + dy * dy), ang = Math.atan2(dy, dx) * 180 / Math.PI;
+          kids.push(E('div', { key: 'l' + i, style: A(pts[i][0] + 4, pts[i][1] + 3, len, 2, { background: 'rgba(190,220,255,.8)', transformOrigin: '0 50%', transform: 'rotate(' + ang + 'deg)', opacity: on ? 1 : 0, transition: 'opacity .8s ' + (i * 0.15) + 's', boxShadow: '0 0 6px rgba(190,220,255,.6)' }) }));
+        }
+        pts.forEach((p, i) => kids.push(E('div', { key: 'p' + i, style: A(p[0], p[1], 8, 8, { borderRadius: '50%', background: '#dfe6ff', boxShadow: '0 0 ' + (on ? 12 : 6) + 'px rgba(200,220,255,.8)', animation: on ? 'none' : 'twinkle 2.4s ' + i * 0.4 + 's infinite' }) })));
+        return D({ position: 'relative', width: 106, height: 44 }, kids);
+      }
+      case 'planet': return this.planetSprite(f);
+    }
+    return null;
+  }
+
+  planetSprite(f) {
+    const E = React.createElement, s = f.style, D = (st, ...k) => E('div', { style: st }, ...k);
+    const P = {
+      Mercury: { c: '#b9b2ad', d: '#978f89', size: 44 },
+      Venus: { c: '#eed6a3', d: '#d6b877', size: 58 },
+      Earth: { c: '#7db8e8', d: '#6fc08b', size: 60 },
+      Mars: { c: '#e08a63', d: '#c26a44', size: 50 },
+      Jupiter: { c: '#e8b98a', d: '#c98f5c', size: 96, bands: true },
+      Saturn: { c: '#f4b57e', d: '#e79a5f', size: 80, ring: true },
+      Uranus: { c: '#a8e4e8', d: '#7fc8ce', size: 66, ring: true },
+      Neptune: { c: '#6f8fe0', d: '#5372c4', size: 64 }
+    }[f.planet];
+    const sz = P.size, g = 'rgba(255,220,160,.35)';
+    const named = f.named && performance.now() - f.named < 2600;
+    const kids = [];
+    kids.push(D(Object.assign({ position: 'absolute', left: 0, top: 0, width: sz, height: sz, borderRadius: '50%' },
+      s === 'neon' ? { border: '3px solid ' + P.c, boxSizing: 'border-box', boxShadow: '0 0 14px ' + g + ', inset 0 0 12px ' + g } :
+      s === 'mix' ? { background: P.c, boxShadow: '0 0 14px ' + g } : { background: P.c })));
+    if (s !== 'neon') {
+      if (P.bands) {
+        kids.push(D({ position: 'absolute', left: 0, top: sz * 0.3, width: sz, height: sz * 0.13, background: P.d, opacity: 0.8, borderRadius: sz, clipPath: 'circle(' + sz / 2 + 'px at 50% ' + (sz * 0.2) + 'px)' }));
+        kids.push(D({ position: 'absolute', left: 0, top: sz * 0.55, width: sz, height: sz * 0.1, background: P.d, opacity: 0.6, clipPath: 'circle(' + sz / 2 + 'px at 50% ' + (-sz * 0.05) + 'px)' }));
+      } else {
+        kids.push(D({ position: 'absolute', left: sz * 0.18, top: sz * 0.22, width: sz * 0.26, height: sz * 0.15, borderRadius: '50%', background: P.d, opacity: 0.85 }));
+        kids.push(D({ position: 'absolute', left: sz * 0.52, top: sz * 0.5, width: sz * 0.3, height: sz * 0.17, borderRadius: '50%', background: P.d, opacity: 0.85 }));
+      }
+    }
+    if (P.ring) {
+      kids.push(D({ position: 'absolute', left: -sz * 0.22, top: sz * 0.42, width: sz * 1.44, height: sz * 0.2, borderRadius: '50%', transform: 'rotate(-14deg)',
+        background: s === 'neon' ? 'transparent' : (f.planet === 'Saturn' ? '#ffd9a8' : '#cdeef1'),
+        border: s === 'neon' ? '3px solid ' + P.c : 'none', boxSizing: 'border-box', opacity: 0.95 }));
+    }
+    return D({ position: 'relative', width: sz, height: sz, animation: named ? 'softPulse 1.2s ease-in-out 2' : 'none' }, kids);
+  }
+
+  chipColors(f) {
+    const map = { rocket: '#cfe6ff', asteroid: '#e6dbf4', alien: '#cef2df', comet: '#cfe6ff', satellite: '#cfe6ff', astronaut: '#f2e6ff', moon: '#f5f0dc', constellation: '#dfe6ff', planet: '#ffe9b8' };
+    const glow = { rocket: 'rgba(170,210,255,.5)', asteroid: 'rgba(200,175,240,.5)', alien: 'rgba(150,240,200,.5)', comet: 'rgba(170,210,255,.5)', satellite: 'rgba(170,210,255,.5)', astronaut: 'rgba(220,190,255,.5)', moon: 'rgba(245,240,200,.5)', constellation: 'rgba(200,220,255,.5)', planet: 'rgba(255,220,150,.55)' };
+    return [map[f.type] || '#dfe6ff', glow[f.type] || 'rgba(200,215,255,.5)'];
+  }
+
+  renderFloater(f) {
+    const E = React.createElement;
+    const flash = f.flash && performance.now() - f.flash < 1800;
+    const kids = [E('div', { key: 'sp' }, this.sprite(f))];
+    if (f.label) {
+      const [cc, gg] = this.chipColors(f);
+      kids.push(E('div', { key: 'ch', style: Object.assign(this.chipStyle(cc, gg, f.style === 'random' ? 'mix' : f.style), { left: -42, top: -14, animation: flash ? 'softPulse .8s ease-in-out 2' : 'none' }) }, f.label));
+    }
+    return E('div', {
+      key: f.id,
+      onClick: () => { if (f.mode === 'drift') { this.pressCount++; this.hitFloater(f); if (this.pressCount % 30 === 0) this.celebrate(); } },
+      style: {
+        position: 'absolute', left: 0, top: 0, cursor: f.label ? 'pointer' : 'default',
+        transform: 'translate(' + f.x + 'vw,' + f.y + 'vh) scale(' + f.scale + ')',
+        filter: flash ? 'brightness(1.35)' : 'none', willChange: 'transform'
+      }
+    }, kids);
+  }
+
+  renderParticle(p) {
+    const E = React.createElement, now = performance.now(), age = Math.max(0, (now - p.born) / 1000);
+    if (age === 0 && p.born > now) return null;
+    const t = age / p.life;
+    if (p.kind === 'ring') {
+      return E('div', { key: p.id, style: { position: 'absolute', left: p.x + 'vw', top: p.y + 'vh', width: 20 + t * 120, height: 20 + t * 120, marginLeft: -(10 + t * 60), marginTop: -(10 + t * 60), borderRadius: '50%', border: '2px solid ' + p.color, opacity: Math.max(0, 1 - t) } });
+    }
+    const isStar = p.kind === 'newstar';
+    const sz = isStar ? 3.5 : 7 * (1 - t * 0.6);
+    return E('div', { key: p.id, style: { position: 'absolute', left: p.x + 'vw', top: p.y + 'vh', width: sz, height: sz, borderRadius: '50%', background: p.color, opacity: isStar ? Math.max(0, 1 - t) : Math.max(0, 1 - t), boxShadow: '0 0 8px ' + p.color, animation: isStar ? 'twinkle 1.2s infinite' : 'none' } });
+  }
+
+  renderLetter(l) {
+    const E = React.createElement, age = (performance.now() - l.born) / 1000, t = age / 2.4;
+    return E('div', { key: l.id, style: {
+      position: 'absolute', left: l.x + 'vw', top: (l.y - t * 14) + 'vh',
+      fontFamily: "'Fredoka',sans-serif", fontWeight: 700, fontSize: '11vmin',
+      color: 'oklch(0.85 0.09 ' + l.hue + ')', opacity: Math.max(0, 1 - t * t),
+      textShadow: '0 0 24px rgba(200,215,255,.4)', transform: 'scale(' + (0.8 + t * 0.4) + ')'
+    } }, l.ch);
+  }
+
+  renderVals() {
+    const st = this.state;
+    return {
+      starsLayer: this.starEls || [],
+      floatersLayer: (this.floaters || []).map((f) => this.renderFloater(f)),
+      particlesLayer: (this.particles || []).map((p) => this.renderParticle(p)),
+      lettersLayer: (this.letters || []).map((l) => this.renderLetter(l)),
+      celebrating: st.celebrating, celebText: st.celebText,
+      planetName: st.planetName ? st.planetName : false,
+      panelOpen: st.panelOpen,
+      closePanel: () => this.setState({ panelOpen: false }),
+      soundLabel: st.soundOn ? 'On 🔔' : 'Off',
+      toggleSound: () => this.save({ soundOn: !st.soundOn }),
+      density: st.density,
+      onDensity: (e) => this.save({ density: +e.target.value }),
+      brightness: st.brightness,
+      onBrightness: (e) => this.save({ brightness: +e.target.value }),
+      skyDim: ((10 - st.brightness) * 0.062).toFixed(3),
+      styleMode: st.styleMode,
+      onStyleMode: (e) => this.save({ styleMode: e.target.value }),
+      kidName: st.kidName,
+      onKidName: (e) => this.save({ kidName: e.target.value }),
+      favPlanet: st.favPlanet,
+      onFavPlanet: (e) => this.save({ favPlanet: e.target.value }),
+      goFullscreen: () => { try { document.documentElement.requestFullscreen(); } catch (e) {} }
+    };
+  }
+}
+
+</script>
+</body>
+</html>
