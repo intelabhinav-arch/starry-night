@@ -76,6 +76,8 @@
   @keyframes ringGrow{0%{transform:translate(-50%,-50%) scale(.1);opacity:.8}100%{transform:translate(-50%,-50%) scale(3.2);opacity:0}}
   @keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
   @keyframes softPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  @keyframes trainWave{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  @keyframes trainWaveBig{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
   @keyframes celebText{0%{transform:translate(-50%,-50%) scale(.6);opacity:0}20%{transform:translate(-50%,-50%) scale(1.05);opacity:1}80%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
 
   @media (prefers-reduced-motion: reduce){
@@ -85,8 +87,9 @@
 </head>
 <body>
 <div id="scene">
-  <div class="layer nohit" id="stars"></div>
   <div id="dimmer"></div>
+  <div class="layer nohit" id="milkyway"></div>
+  <div class="layer nohit" id="stars"></div>
   <div class="layer" id="floaters"></div>
   <div class="layer nohit" id="particles"></div>
   <div class="layer nohit" id="letters"></div>
@@ -180,7 +183,7 @@ function persist(){ try{ localStorage.setItem('starryFiddler.settings', JSON.str
 /* ---------- element refs ---------- */
 var $ = function(id){ return document.getElementById(id); };
 var elStars=$('stars'), elFloaters=$('floaters'), elParticles=$('particles'), elLetters=$('letters'),
-    elDimmer=$('dimmer'), elBanner=$('banner'), elCeleb=$('celeb'), elCelebText=$('celebText'),
+    elDimmer=$('dimmer'), elMilkyway=$('milkyway'), elBanner=$('banner'), elCeleb=$('celeb'), elCelebText=$('celebText'),
     elOverlay=$('overlay');
 
 /* ---------- audio (synth at runtime, Web Audio) ---------- */
@@ -252,6 +255,32 @@ function makeStars(){
       ';animation:twinkle '+(2.5+Math.random()*3.5)+'s '+(Math.random()*4)+'s ease-in-out infinite"></div>';
   }
   elStars.innerHTML=html;
+}
+
+/* soft diagonal Milky Way band — hidden by light pollution at high brightness,
+   revealed as the sky is dimmed (opacity driven from applyBrightness). */
+function makeMilkyway(){
+  var ang=-16, cx=50, cy=42; // rotation angle + rough center (vw/vh) of the band
+  var html='';
+  html+='<div style="position:absolute;left:-15vw;top:'+(cy-13)+'vh;width:130vw;height:26vh;'+
+    'background:linear-gradient(100deg,rgba(180,190,255,0) 0%,rgba(200,205,255,.09) 20%,rgba(215,210,250,.15) 42%,rgba(220,208,235,.13) 58%,rgba(190,195,255,.07) 80%,rgba(180,190,255,0) 100%);'+
+    'transform:rotate('+ang+'deg);filter:blur(11px)"></div>';
+  html+='<div style="position:absolute;left:-15vw;top:'+(cy-4.5)+'vh;width:130vw;height:9vh;'+
+    'background:linear-gradient(100deg,rgba(210,215,255,0) 0%,rgba(225,222,255,.12) 32%,rgba(235,226,250,.17) 50%,rgba(225,222,255,.12) 68%,rgba(210,215,255,0) 100%);'+
+    'transform:rotate('+ang+'deg);filter:blur(4px)"></div>';
+  html+='<div style="position:absolute;left:-15vw;top:'+(cy-2)+'vh;width:130vw;height:4vh;'+
+    'background:linear-gradient(100deg,rgba(8,10,22,0) 0%,rgba(8,10,22,.12) 35%,rgba(8,10,22,.16) 50%,rgba(8,10,22,.12) 65%,rgba(8,10,22,0) 100%);'+
+    'transform:rotate('+ang+'deg);filter:blur(6px)"></div>';
+  var rad=ang*Math.PI/180;
+  for(var i=0;i<60;i++){
+    var along=Math.random()*130-15, perp=(Math.random()-0.5)*11;
+    var leftPct=along, topPct=cy+perp+(along-cx)*Math.tan(rad)*0.35;
+    var sz=0.8+Math.random()*1.7, warm=Math.random()<0.2;
+    html+='<div style="position:absolute;left:'+leftPct+'vw;top:'+topPct+'vh;width:'+sz+'px;height:'+sz+'px;border-radius:50%;'+
+      'background:'+(warm?'#ffe9b8':'#e8ecff')+';opacity:'+(0.3+Math.random()*0.5).toFixed(2)+';'+
+      'animation:twinkle '+(3+Math.random()*4)+'s '+(Math.random()*4)+'s ease-in-out infinite"></div>';
+  }
+  elMilkyway.innerHTML=html;
 }
 
 /* small helpers for building sprite markup */
@@ -345,26 +374,36 @@ var REGISTRY = {
   },
   alientrain:{
     weight:7, labels:'ABDEFGHIJKLNOPQRTV',
-    spawn:function(f){
-      f.baseY=f.y; f.amp=6+Math.random()*5; f.wf=1.4+Math.random()*1.1; f.wp=Math.random()*Math.PI*2;
-      f.vx=f.dir*(2.2+Math.random()*1.1); f.vy=0;
+    spawn:function(f){ f.vx=f.dir*(2.2+Math.random()*1.1); f.vy=0; },
+    onHit:function(f){
+      f.wig=performance.now(); f.vx*=1.9; zuup(); rerender(f);
+      clearTimeout(f._wigT);
+      f._wigT=setTimeout(function(){ if(!f.dead) rerender(f); }, 1550);
     },
-    onHit:function(f){ f.wig=performance.now(); f.vx*=1.9; f.amp=Math.min(16,f.amp*1.5); zuup(); rerender(f); },
-    tick:function(f,t){ f.y=f.baseY+f.amp*Math.sin(f.wp+t/1000*f.wf*Math.PI); },
+    // each car runs the same wave keyframe with a staggered delay, so the body
+    // undulates snake-like along its length instead of bobbing as one rigid block.
     sprite:function(f){
       var s=f.style, c=s==='neon'?'#8affd0':'#63cba1', g='rgba(110,240,180,.45)';
       var dome=s==='neon'?'#8affd0':'#a9ead0';
       var wig=f.wig && performance.now()-f.wig<1400;
-      var html='<div style="'+abs(12,22,118,4,'border-radius:4px;background:linear-gradient(90deg,rgba(110,240,180,.12),rgba(110,240,180,.6),rgba(110,240,180,.12))')+'"></div>';
-      [0,38,76,114].forEach(function(x){
-        html+='<div style="position:absolute;left:'+x+'px;top:0;width:44px;height:30px">'+
-          '<div style="'+box(dome,g,s,abs(12,0,20,15,'border-radius:12px 12px 0 0'))+'"></div>'+
-          '<div style="'+box(c,g,s,abs(0,12,44,14,'border-radius:50%'))+'"></div>'+
-          '<div style="'+abs(9,15,6,6,'border-radius:50%;background:#fff0a3;box-shadow:0 0 6px rgba(255,240,160,.9)')+'"></div>'+
-          '<div style="'+abs(29,15,6,6,'border-radius:50%;background:#fff0a3;box-shadow:0 0 6px rgba(255,240,160,.9)')+'"></div>'+
+      var carAnim=wig?'trainWaveBig .5s ease-in-out 3':'trainWave 1.3s ease-in-out infinite';
+      var stride=42, html='';
+      for(var i=0;i<4;i++){
+        var x=i*stride, first=i===0;
+        html+='<div style="position:absolute;left:'+x+'px;top:0;width:34px;height:34px;animation:'+carAnim+';animation-delay:'+(i*0.16)+'s">'+
+          (first?(
+            '<div style="'+abs(16,-6,2,7,'background:'+c+';border-radius:2px')+'"></div>'+
+            '<div style="'+abs(13.5,-9,7,7,'border-radius:50%;background:#fff0a3;box-shadow:0 0 6px rgba(255,240,160,.9)')+'"></div>'
+          ):'')+
+          '<div style="'+box(dome,g,s,abs(8,1,18,7,'border-radius:5px 5px 0 0'))+'"></div>'+
+          '<div style="'+box(c,g,s,abs(0,7,34,15,'border-radius:6px'))+'"></div>'+
+          '<div style="'+abs(13,10,8,8,'border-radius:50%;background:#fff0a3;box-shadow:0 0 6px rgba(255,240,160,.9)')+'"></div>'+
+          '<div style="'+abs(5,27,7,7,'border-radius:50%;background:#20263f;border:1px solid rgba(180,190,230,.4)')+'"></div>'+
+          '<div style="'+abs(21,27,7,7,'border-radius:50%;background:#20263f;border:1px solid rgba(180,190,230,.4)')+'"></div>'+
+          (i<3?'<div style="'+abs(34,15,8,3,'background:'+c+';opacity:.7;border-radius:2px')+'"></div>':'')+
         '</div>';
-      });
-      return '<div style="position:relative;width:158px;height:32px;animation:'+(wig?'wiggle .5s ease-in-out 3':'none')+'">'+html+'</div>';
+      }
+      return '<div style="position:relative;width:'+(4*34+3*8)+'px;height:40px">'+html+'</div>';
     }
   },
   comet:{
@@ -372,10 +411,15 @@ var REGISTRY = {
     onHit:function(f){ f.tail=1; sparkle(f,6); arpeggio(); rerender(f); },
     tick:function(f){ if(f.tail>0){ f.tail=Math.max(0,f.tail-0.006); rerender(f); } },
     sprite:function(f){
-      var s=f.style, tailW=70+(f.tail||0)*90;
-      return '<div style="position:relative;width:160px;height:30px;transform:'+(f.dir===1?'scaleX(-1)':'none')+'">'+
-        '<div style="'+abs(26,4,tailW,20,'border-radius:50%;background:linear-gradient(90deg,rgba(160,215,255,'+(0.45+(f.tail||0)*0.4)+'),rgba(160,215,255,0));transition:width .5s')+'"></div>'+
-        '<div style="'+abs(0,0,28,28,'border-radius:50%;background:'+(s==='neon'?'transparent':'#bfe4ff')+';border:'+(s==='neon'?'3px solid #9fd8ff':'none')+';box-shadow:0 0 '+(14+(f.tail||0)*20)+'px rgba(170,220,255,.8)')+'"></div>'+
+      var s=f.style, tail=f.tail||0, tailW=70+tail*90;
+      // head always leads in the direction of travel; tail is anchored just behind it and grows away from it.
+      var forward=f.dir===1, headLeft=forward?(160-28):0, tailLeft=forward?(headLeft+4-tailW):26;
+      var grad=forward
+        ? 'linear-gradient(to left,rgba(160,215,255,'+(0.45+tail*0.4)+'),rgba(160,215,255,0))'
+        : 'linear-gradient(to right,rgba(160,215,255,'+(0.45+tail*0.4)+'),rgba(160,215,255,0))';
+      return '<div style="position:relative;width:160px;height:30px">'+
+        '<div style="'+abs(tailLeft,4,tailW,20,'border-radius:50%;background:'+grad)+'"></div>'+
+        '<div style="'+abs(headLeft,0,28,28,'border-radius:50%;background:'+(s==='neon'?'transparent':'#bfe4ff')+';border:'+(s==='neon'?'3px solid #9fd8ff':'none')+';box-shadow:0 0 '+(14+tail*20)+'px rgba(170,220,255,.8)')+'"></div>'+
       '</div>';
     }
   },
@@ -735,7 +779,12 @@ function syncPanel(){
   $('favSel').value=settings.favPlanet;
   applyBrightness();
 }
-function applyBrightness(){ elDimmer.style.opacity=((10-settings.brightness)*0.062).toFixed(3); }
+function applyBrightness(){
+  var dark=(10-settings.brightness)/9; // 0 at brightness=10 (max) .. 1 at brightness=1 (min)
+  elDimmer.style.opacity=(dark*0.96).toFixed(3);           // sky goes near-total black at low brightness
+  elStars.style.filter='brightness('+(1+dark*0.55).toFixed(2)+') saturate('+(1+dark*0.35).toFixed(2)+')'; // stars pop brighter/neon as sky darkens
+  elMilkyway.style.opacity=dark.toFixed(3);                // Milky Way only shows once light pollution (brightness) is dialed down
+}
 
 $('closeBtn').addEventListener('click', closePanel);
 elOverlay.addEventListener('pointerdown', function(e){ if(e.target===elOverlay) closePanel(); });
@@ -753,6 +802,7 @@ $('fsBtn').addEventListener('click', function(){ try{ document.documentElement.r
 
 /* ---------- boot ---------- */
 makeStars();
+makeMilkyway();
 applyBrightness();
 requestAnimationFrame(loop);
 
