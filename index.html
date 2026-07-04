@@ -88,7 +88,6 @@
 <body>
 <div id="scene">
   <div id="dimmer"></div>
-  <div class="layer nohit" id="milkyway"></div>
   <div class="layer nohit" id="stars"></div>
   <div class="layer" id="floaters"></div>
   <div class="layer nohit" id="particles"></div>
@@ -183,7 +182,7 @@ function persist(){ try{ localStorage.setItem('starryFiddler.settings', JSON.str
 /* ---------- element refs ---------- */
 var $ = function(id){ return document.getElementById(id); };
 var elStars=$('stars'), elFloaters=$('floaters'), elParticles=$('particles'), elLetters=$('letters'),
-    elDimmer=$('dimmer'), elMilkyway=$('milkyway'), elBanner=$('banner'), elCeleb=$('celeb'), elCelebText=$('celebText'),
+    elDimmer=$('dimmer'), elBanner=$('banner'), elCeleb=$('celeb'), elCelebText=$('celebText'),
     elOverlay=$('overlay');
 
 /* ---------- audio (synth at runtime, Web Audio) ---------- */
@@ -255,32 +254,6 @@ function makeStars(){
       ';animation:twinkle '+(2.5+Math.random()*3.5)+'s '+(Math.random()*4)+'s ease-in-out infinite"></div>';
   }
   elStars.innerHTML=html;
-}
-
-/* soft diagonal Milky Way band — hidden by light pollution at high brightness,
-   revealed as the sky is dimmed (opacity driven from applyBrightness). */
-function makeMilkyway(){
-  var ang=-16, cx=50, cy=42; // rotation angle + rough center (vw/vh) of the band
-  var html='';
-  html+='<div style="position:absolute;left:-15vw;top:'+(cy-13)+'vh;width:130vw;height:26vh;'+
-    'background:linear-gradient(100deg,rgba(180,190,255,0) 0%,rgba(200,205,255,.09) 20%,rgba(215,210,250,.15) 42%,rgba(220,208,235,.13) 58%,rgba(190,195,255,.07) 80%,rgba(180,190,255,0) 100%);'+
-    'transform:rotate('+ang+'deg);filter:blur(11px)"></div>';
-  html+='<div style="position:absolute;left:-15vw;top:'+(cy-4.5)+'vh;width:130vw;height:9vh;'+
-    'background:linear-gradient(100deg,rgba(210,215,255,0) 0%,rgba(225,222,255,.12) 32%,rgba(235,226,250,.17) 50%,rgba(225,222,255,.12) 68%,rgba(210,215,255,0) 100%);'+
-    'transform:rotate('+ang+'deg);filter:blur(4px)"></div>';
-  html+='<div style="position:absolute;left:-15vw;top:'+(cy-2)+'vh;width:130vw;height:4vh;'+
-    'background:linear-gradient(100deg,rgba(8,10,22,0) 0%,rgba(8,10,22,.12) 35%,rgba(8,10,22,.16) 50%,rgba(8,10,22,.12) 65%,rgba(8,10,22,0) 100%);'+
-    'transform:rotate('+ang+'deg);filter:blur(6px)"></div>';
-  var rad=ang*Math.PI/180;
-  for(var i=0;i<60;i++){
-    var along=Math.random()*130-15, perp=(Math.random()-0.5)*11;
-    var leftPct=along, topPct=cy+perp+(along-cx)*Math.tan(rad)*0.35;
-    var sz=0.8+Math.random()*1.7, warm=Math.random()<0.2;
-    html+='<div style="position:absolute;left:'+leftPct+'vw;top:'+topPct+'vh;width:'+sz+'px;height:'+sz+'px;border-radius:50%;'+
-      'background:'+(warm?'#ffe9b8':'#e8ecff')+';opacity:'+(0.3+Math.random()*0.5).toFixed(2)+';'+
-      'animation:twinkle '+(3+Math.random()*4)+'s '+(Math.random()*4)+'s ease-in-out infinite"></div>';
-  }
-  elMilkyway.innerHTML=html;
 }
 
 /* small helpers for building sprite markup */
@@ -783,7 +756,6 @@ function applyBrightness(){
   var dark=(10-settings.brightness)/9; // 0 at brightness=10 (max) .. 1 at brightness=1 (min)
   elDimmer.style.opacity=(dark*0.96).toFixed(3);           // sky goes near-total black at low brightness
   elStars.style.filter='brightness('+(1+dark*0.55).toFixed(2)+') saturate('+(1+dark*0.35).toFixed(2)+')'; // stars pop brighter/neon as sky darkens
-  elMilkyway.style.opacity=dark.toFixed(3);                // Milky Way only shows once light pollution (brightness) is dialed down
 }
 
 $('closeBtn').addEventListener('click', closePanel);
@@ -802,7 +774,6 @@ $('fsBtn').addEventListener('click', function(){ try{ document.documentElement.r
 
 /* ---------- boot ---------- */
 makeStars();
-makeMilkyway();
 applyBrightness();
 requestAnimationFrame(loop);
 
