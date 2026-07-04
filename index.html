@@ -31,9 +31,12 @@
 
   .part{ position:absolute; border-radius:50%; pointer-events:none; }
 
-  #hint{ position:absolute; left:0; right:0; bottom:2.5vh; display:flex; justify-content:center; pointer-events:none; }
+  #hint{ position:absolute; left:0; right:0; bottom:2.5vh; display:flex; justify-content:center; pointer-events:none;
+    opacity:1; transition:opacity 1.8s ease; }
+  #hint.hide{ opacity:0; }
   #hint>div{ background:rgba(255,255,255,.07); border-radius:999px; padding:1vmin 2.8vmin;
     color:rgba(220,228,255,.55); font-size:1.9vmin; font-weight:500; letter-spacing:.08em; }
+
 
   #banner{ position:absolute; left:50%; bottom:12vh; transform:translateX(-50%); pointer-events:none;
     background:rgba(255,255,255,.1); border-radius:999px; padding:1.4vmin 4vmin; color:#ffe9b8;
@@ -143,6 +146,10 @@
           <option>Jupiter</option><option>Saturn</option><option>Uranus</option><option>Neptune</option>
         </select>
       </div>
+      <div class="row">
+        <div class="lbl">Keyboard hits</div>
+        <div class="val" id="hitStat">0/0</div>
+      </div>
       <button class="full" id="fsBtn">&#9646; Go fullscreen (Esc exits)</button>
       <div class="hintcopy">Favorite planet visits more often and gets extra sparkles. Every 30 key
         presses brings a gentle supernova celebration with your child's name.</div>
@@ -178,6 +185,21 @@ function load(){
   }catch(e){ return Object.assign({}, DEFAULTS); }
 }
 function persist(){ try{ localStorage.setItem('starryFiddler.settings', JSON.stringify(settings)); }catch(e){} }
+
+/* ---------- keyboard hit/miss stats (persisted across sessions) ---------- */
+var stats = loadStats();
+function loadStats(){
+  try{
+    var s = JSON.parse(localStorage.getItem('starryFiddler.stats') || '{}');
+    return { correct: s.correct||0, total: s.total||0 };
+  }catch(e){ return { correct:0, total:0 }; }
+}
+function persistStats(){ try{ localStorage.setItem('starryFiddler.stats', JSON.stringify(stats)); }catch(e){} }
+function recordKeyPress(matched){
+  stats.total++; if(matched) stats.correct++;
+  $('hitStat').textContent=stats.correct+'/'+stats.total;
+  persistStats();
+}
 
 /* ---------- element refs ---------- */
 var $ = function(id){ return document.getElementById(id); };
@@ -645,10 +667,11 @@ window.addEventListener('keydown', function(e){
 
   pressCount++;
   var target=floaters.find(function(f){ return f.label===k && f.mode==='drift'; });
-  if(target){ hit(target); }
+  if(target){ hit(target); recordKeyPress(true); }
   else{
     letters.push({id:uid++,ch:k,x:25+Math.random()*50,y:45+Math.random()*20,born:performance.now(),hue:(Math.random()*360)|0,el:null});
     chime();
+    recordKeyPress(false);
   }
   if(pressCount%30===0) celebrate();
 });
@@ -775,6 +798,8 @@ $('fsBtn').addEventListener('click', function(){ try{ document.documentElement.r
 /* ---------- boot ---------- */
 makeStars();
 applyBrightness();
+$('hitStat').textContent=stats.correct+'/'+stats.total;
+setTimeout(function(){ $('hint').classList.add('hide'); }, 8000);
 requestAnimationFrame(loop);
 
 })();
