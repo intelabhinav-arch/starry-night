@@ -13,8 +13,13 @@ web app**: no build step, no framework, no network calls, no data collection.
   object's label triggers that object's signature reaction; any other key floats a big soft
   letter up with a chime.
 - **Click / tap works too** — touch and mouse friendly.
-- **10 object types** — rockets, asteroids, alien ships, comets, satellites, astronauts,
+- **Two worlds** — Space and Under-the-sea. A random one greets you each visit, or pick
+  one in the grown-up panel.
+- **Space** — rockets, asteroids, alien ships, an alien train, comets, satellites, astronauts,
   the moon (with phases), 8 planets (spoken aloud), constellations, and ambient shooting stars.
+- **Under the sea** — sharks, clownfish, blackfish, seahorses, slithering sea snakes, sea lions,
+  penguins, crabs scuttling along the sand, seashells that open to reveal pearls, and rising
+  bubbles. The brightness slider becomes day & night underwater.
 - **Gentle milestones** — every ~30 presses a supernova celebration blooms with the child's name.
 - **Grown-up panel** — type `PARENT` on the keyboard to open settings (sound, sky busyness,
   brightness, visual style, child's name, favorite planet, fullscreen). Persists to `localStorage`.
